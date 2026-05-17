@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collections – LiFurniture</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       NAVIGATION
+  ══════════════════════════════════════════════ -->
+  <nav class="nav scrolled" id="mainNav">
+    <a href="index.html" class="nav-logo">
+      <span class="wordmark">LiFurniture</span>
+      <span class="tagline">Made-to-Order · Est. 2015</span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="collections.html" class="active">Collections</a></li>
+      <li><a href="appointments.html">Appointments</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="appointments.html" class="nav-cta">Book a Visit</a></li>
+    </ul>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════
+       PAGE HERO
+  ══════════════════════════════════════════════ -->
+  <section class="page-hero" style="padding-top: var(--nav-h);">
+    <div class="page-hero-content">
+      <span class="section-label" style="color: var(--honey); margin-bottom: 12px;">Portfolio</span>
+      <h1 class="page-hero-title">Our <em>Collections</em></h1>
+      <p class="page-hero-sub">Completed projects — custom-built for real homes across Metro Manila.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       FILTER BAR
+  ══════════════════════════════════════════════ -->
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-filter="all">All Projects</button>
+    <button class="filter-btn" data-filter="cabinets">Cabinets</button>
+    <button class="filter-btn" data-filter="drawers">Drawers</button>
+    <button class="filter-btn" data-filter="storage">Built-in Storage</button>
+    <button class="filter-btn" data-filter="kitchen">Kitchen</button>
+    <span class="filter-count" id="filterCount">Showing 6 projects</span>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       GALLERY
+  ══════════════════════════════════════════════ -->
+  <section class="gallery">
+    <div class="gallery-grid" id="galleryGrid">
+
+      <!-- Card 1 -->
+      <article class="gallery-card gc-1" data-category="cabinets kitchen">
+        <div class="img-wrap">
+          <img src="33dd0f8a-387c-4479-ae5d-d6ad25624123.jpg" alt="Ceiling Kitchen Cabinet" />
+          <div class="gallery-overlay">
+            <span class="view-btn">View Details</span>
+          </div>
+        </div>
+        <div class="card-info">
+          <p class="cat">Cabinets · Kitchen</p>
+          <h3>Ceiling Kitchen Cabinet</h3>
+          <div class="meta">
+            <span>PlyWood</span>
+            <span>·</span>
+            <span>Valenzuela, 2024</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="gallery-card gc-2" data-category="drawers">
+        <div class="img-wrap">
+          <img src="70354f5c-8db7-4c45-8dd9-b9d88ff8075f.jpg" alt="6-Drawer Bedroom Chest" />
+          <div class="gallery-overlay">
+            <span class="view-btn">View Details</span>
+          </div>
+        </div>
+        <div class="card-info">
+          <p class="cat">Drawers · Bedroom</p>
+          <h3>6-Drawer Bedroom Chest</h3>
+          <div class="meta">
+            <span>PlyWood</span>
+            <span>·</span>
+            <span>Malabon, 2024</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="gallery-card gc-3" data-category="storage">
+        <div class="img-wrap">
+          <img src="5c4aa26d-959f-45e6-8246-509e73e20f30.jpg" alt="Built-in Storage · Living Room" />
+          <div class="gallery-overlay">
+            <span class="view-btn">View Details</span>
+          </div>
+        </div>
+        <div class="card-info">
+          <p class="cat">Built-in Storage · Living Room</p>
+          <h3>Wall-to-Wall Storage Unit</h3>
+          <div class="meta">
+            <span>Plywood + Veneer</span>
+            <span>·</span>
+            <span>Caloocan, 2023</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="gallery-card gc-4" data-category="cabinets">
+        <div class="img-wrap">
+          <img src="ec2652f1-b796-443e-ad25-e1d173b7f772.jpg" alt="Mirror Cabinet" />
+          <div class="gallery-overlay">
+            <span class="view-btn">View Details</span>
+          </div>
+        </div>
+        <div class="card-info">
+          <p class="cat">Cabinets · Bedroom</p>
+          <h3>Mirror Cabinet</h3>
+          <div class="meta">
+            <span>Melamine Board</span>
+            <span>·</span>
+            <span>Quezon City, 2024</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 5 -->
+      <article class="gallery-card gc-5" data-category="storage kitchen">
+        <div class="img-wrap">
+          <img src="2547a7b6-df1c-4cab-927e-950313666a46.jpg" alt="Under-Sink & Overhead Cabinet Set" />
+          <!-- 👈 HERE -->
+          <div class="gallery-overlay">
+            <span class="view-btn">View Details</span>
+          </div>
+        </div>
+
+        <div class="card-info"> <!-- card-info is OUTSIDE img-wrap, so don't put it here -->
+          <p class="cat">Storage · Kitchen</p>
+          <h3>Under-Sink & Overhead Cabinet Set</h3>
+          <div class="meta">
+            <span>Marine Plywood</span>
+            <span>·</span>
+            <span>Valenzuela, 2023</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 6 -->
+      <article class="gallery-card gc-6" data-category="drawers storage">
+        <div class="img-wrap">
+          <img src="20260515_171617.jpg" alt="Study Desk with Built-in Drawers" />
+          <div class="gallery-overlay">
+            <span class="view-btn">View Details</span>
+          </div>
+        </div>
+        <div class="card-info">
+          <p class="cat">Drawers · Study Room</p>
+          <h3>Study Desk with Built-in Drawers</h3>
+          <div class="meta">
+            <span>PlyWood + MDF</span>
+            <span>·</span>
+            <span>Navotas, 2024</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Empty state (hidden by default) -->
+    <div id="emptyState" style="display:none; text-align:center; padding: 80px 0;">
+      <p style="font-family: var(--font-display); font-size: 2rem; color: var(--mist);">No projects found.</p>
+      <p style="color: var(--mist); margin-top: 8px; font-size: 0.85rem;">Try selecting a different category.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       CTA STRIP
+  ══════════════════════════════════════════════ -->
+  <section class="cta-banner" style="padding: 80px 48px;">
+    <div class="cta-text">
+      <span class="section-label">Inspired?</span>
+      <h2 class="section-title" style="color: var(--cream);">
+        Let's Build Something<br><em>Just for You</em>
+      </h2>
+      <p class="cta-sub">Book a free site visit and tell us what you have in mind.</p>
+    </div>
+    <a href="appointments.html" class="btn btn-primary" style="white-space: nowrap;">Book a Free Visit</a>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="wordmark">LiFurniture</div>
+        <p>A family-operated workshop dedicated to custom cabinets, drawers, and built-in storage solutions. Based in
+          Valenzuela City — serving Metro Manila.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="collections.html">Collections</a></li>
+
+          <li><a href="appointments.html">Appointments</a></li>
+          <li><a href="about.html">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#">Custom Cabinets</a></li>
+          <li><a href="#">Drawer Units</a></li>
+          <li><a href="#">Built-in Storage</a></li>
+          <li><a href="#">Site Measurement</a></li>
+          <li><a href="#">Full Installation</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:++63969 264 3545">+63969 264 3545</a></li>
+          <li><a href="mailto:info@lifurniture.ph">info@lifurniture.ph</a></li>
+          <li><a href="#">Facebook Page</a></li>
+          <li><a href="#">Valenzuela City, Metro Manila</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 LiFurniture. All rights reserved.</span>
+      <span>WS101 – Web Systems and Technology I · BSIT 2-3</span>
+    </div>
+  </footer>
+
+  <script>
+    // ── Navbar ──
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+      if (window.scrollY <= 40) nav.classList.add('scrolled'); // always dark on this page
+    });
+
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+
+    // ── Filter logic ──
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.gallery-card');
+    const countEl = document.getElementById('filterCount');
+    const emptyState = document.getElementById('emptyState');
+    const grid = document.getElementById('galleryGrid');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Update active button
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.dataset.filter;
+        let visible = 0;
+
+        cards.forEach((card, i) => {
+          const cats = card.dataset.category;
+          const show = filter === 'all' || cats.includes(filter);
+
+          if (show) {
+            card.style.display = '';
+            card.style.animationDelay = (visible * 0.06) + 's';
+            card.style.animation = 'none';
+            void card.offsetWidth; // reflow
+            card.style.animation = '';
+            visible++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        countEl.textContent = `Showing ${visible} project${visible !== 1 ? 's' : ''}`;
+        emptyState.style.display = visible === 0 ? 'block' : 'none';
+        grid.style.display = visible === 0 ? 'none' : '';
+      });
+    });
+  </script>
+</body>
+
+</html>

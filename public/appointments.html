@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book an Appointment – LiFurniture</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Appointments page-specific styles ── */
+
+    .appt-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 0;
+      min-height: 80vh;
+    }
+
+    /* ── Left panel ── */
+    .appt-info {
+      background: var(--walnut);
+      padding: 80px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .appt-info::before {
+      content: '';
+      position: absolute;
+      bottom: -80px;
+      left: -80px;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 137, 74, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .appt-info .section-label {
+      color: var(--honey);
+    }
+
+    .appt-info .section-title {
+      color: var(--cream);
+      margin-bottom: 24px;
+    }
+
+    .appt-info .section-title em {
+      color: var(--honey);
+    }
+
+    .appt-intro {
+      font-size: 0.88rem;
+      color: var(--mist);
+      line-height: 1.8;
+      font-weight: 300;
+      margin-bottom: 48px;
+    }
+
+    .appt-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .appt-step {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .appt-step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(212, 137, 74, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--honey);
+      flex-shrink: 0;
+    }
+
+    .appt-step-text h4 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 4px;
+    }
+
+    .appt-step-text p {
+      font-size: 0.8rem;
+      color: var(--mist);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    .appt-contact-strip {
+      margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(212, 137, 74, 0.15);
+    }
+
+    .appt-contact-strip p {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--honey);
+      margin-bottom: 16px;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+      color: var(--mist);
+      transition: color var(--transition);
+    }
+
+    .contact-link:hover {
+      color: var(--cream);
+    }
+
+    .contact-link .icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(212, 137, 74, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Right panel / Form ── */
+    .appt-form-panel {
+      background: var(--parchment);
+      padding: 80px 64px;
+    }
+
+    .form-heading {
+      margin-bottom: 48px;
+    }
+
+    .form-heading h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 300;
+      color: var(--walnut);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .form-heading h2 em {
+      font-style: italic;
+      color: var(--cedar);
+    }
+
+    .form-heading p {
+      font-size: 0.82rem;
+      color: var(--cedar);
+      font-weight: 300;
+    }
+
+    .appt-form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--cedar);
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      color: var(--walnut);
+      background: var(--white);
+      border: 1px solid rgba(44, 26, 14, 0.15);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+      width: 100%;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--honey);
+      box-shadow: 0 0 0 3px rgba(212, 137, 74, 0.12);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: var(--mist);
+      font-weight: 300;
+    }
+
+    .form-group select {
+      appearance: none;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23B5651D' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 110px;
+      line-height: 1.6;
+    }
+
+    .form-divider {
+      height: 1px;
+      background: rgba(44, 26, 14, 0.1);
+      margin: 4px 0;
+    }
+
+    .form-note {
+      font-size: 0.75rem;
+      color: var(--mist);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    .form-note strong {
+      color: var(--cedar);
+      font-weight: 500;
+    }
+
+    .form-submit-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .form-success {
+      display: none;
+      padding: 20px 24px;
+      background: rgba(212, 137, 74, 0.1);
+      border: 1px solid rgba(212, 137, 74, 0.3);
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      color: var(--cedar);
+      line-height: 1.6;
+    }
+
+    .form-success strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--walnut);
+      margin-bottom: 4px;
+    }
+
+    /* ── Why Book section ── */
+    .why-book {
+      background: var(--linen);
+      padding: 80px 48px;
+    }
+
+    .why-book-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .why-book-inner .section-title {
+      margin-bottom: 56px;
+    }
+
+    .perks-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .perk-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 40px 32px;
+      border: 1px solid rgba(44, 26, 14, 0.06);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .perk-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(44, 26, 14, 0.1);
+    }
+
+    .perk-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+
+    .perk-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--walnut);
+      margin-bottom: 10px;
+    }
+
+    .perk-card p {
+      font-size: 0.82rem;
+      color: var(--cedar);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .appt-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .appt-form-panel {
+        padding: 64px 48px;
+      }
+
+      .perks-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .appt-info {
+        padding: 56px 24px;
+      }
+
+      .appt-form-panel {
+        padding: 56px 24px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .perks-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .why-book {
+        padding: 56px 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       NAVIGATION
+  ══════════════════════════════════════════════ -->
+  <nav class="nav scrolled" id="mainNav">
+    <a href="index.html" class="nav-logo">
+      <span class="wordmark">LiFurniture</span>
+      <span class="tagline">Made-to-Order · Est. 2015</span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="collections.html">Collections</a></li>
+      <li><a href="appointments.html" class="active">Appointments</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="appointments.html" class="nav-cta">Book a Visit</a></li>
+    </ul>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════
+       PAGE HERO
+  ══════════════════════════════════════════════ -->
+  <section class="page-hero" style="padding-top: var(--nav-h);">
+    <div class="page-hero-content">
+      <span class="section-label" style="color: var(--honey); margin-bottom: 12px;">Schedule a Visit</span>
+      <h1 class="page-hero-title">Book an <em>Appointment</em></h1>
+      <p class="page-hero-sub">Tell us about your space — we'll handle the rest, from measurement to installation.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       MAIN LAYOUT: Info + Form
+  ══════════════════════════════════════════════ -->
+  <div class="appt-layout">
+
+    <!-- Left: Info Panel -->
+    <div class="appt-info">
+      <span class="section-label">Before You Visit</span>
+      <h2 class="section-title">What to <em>Expect</em></h2>
+      <p class="appt-intro">
+        Every project starts with a conversation. Book a free site visit and our team will come to your home, take
+        accurate measurements, and walk you through your options — no pressure, no commitment.
+      </p>
+
+      <div class="appt-steps">
+        <div class="appt-step">
+          <div class="appt-step-num">1</div>
+          <div class="appt-step-text">
+            <h4>Submit Your Request</h4>
+            <p>Fill in your details and preferred schedule using the form. We'll confirm within 24 hours.</p>
+          </div>
+        </div>
+        <div class="appt-step">
+          <div class="appt-step-num">2</div>
+          <div class="appt-step-text">
+            <h4>Free Site Visit</h4>
+            <p>Our team visits your home to take precise measurements and discuss your vision in detail.</p>
+          </div>
+        </div>
+        <div class="appt-step">
+          <div class="appt-step-num">3</div>
+          <div class="appt-step-text">
+            <h4>Design & Quotation</h4>
+            <p>We prepare a tailored design plan and a transparent price quote for your review and approval.</p>
+          </div>
+        </div>
+        <div class="appt-step">
+          <div class="appt-step-num">4</div>
+          <div class="appt-step-text">
+            <h4>Build & Install</h4>
+            <p>Once approved, we craft your furniture in our Valenzuela workshop and handle full installation.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="appt-contact-strip">
+        <p>Or reach us directly</p>
+        <div class="contact-links">
+          <a href="tel:+639692643545" class="contact-link">
+            <span class="icon">📞</span>
+            <span>+63 969 264 3545</span>
+          </a>
+          <a href="mailto:info@lifurniture.ph" class="contact-link">
+            <span class="icon">✉️</span>
+            <span>info@lifurniture.ph</span>
+          </a>
+          <a href="#" class="contact-link">
+            <span class="icon">📍</span>
+            <span>Valenzuela City, Metro Manila</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Form Panel -->
+    <div class="appt-form-panel">
+      <div class="form-heading">
+        <h2>Request a <em>Free Site Visit</em></h2>
+        <p>All fields are required unless marked optional.</p>
+      </div>
+
+      <form class="appt-form" id="apptForm" novalidate>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" placeholder="e.g. Maria" required />
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" placeholder="e.g. Santos" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="+63 9XX XXX XXXX" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="you@email.com" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="address">Home Address</label>
+          <input type="text" id="address" name="address" placeholder="Street, Barangay, City" required />
+        </div>
+
+        <div class="form-divider"></div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="service">Type of Project</label>
+            <select id="service" name="service" required>
+              <option value="" disabled selected>Select a project type</option>
+              <option value="cabinets">Custom Cabinets</option>
+              <option value="drawers">Drawer Units</option>
+              <option value="storage">Built-in Storage</option>
+              <option value="kitchen">Kitchen Cabinets</option>
+              <option value="combo">Multiple / Combination</option>
+              <option value="other">Other (describe below)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="budget">Estimated Budget (Optional)</label>
+            <select id="budget" name="budget">
+              <option value="" disabled selected>Select a range</option>
+              <option value="below10k">Below ₱10,000</option>
+              <option value="10k-30k">₱10,000 – ₱30,000</option>
+              <option value="30k-60k">₱30,000 – ₱60,000</option>
+              <option value="60k-100k">₱60,000 – ₱100,000</option>
+              <option value="above100k">Above ₱100,000</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="prefDate">Preferred Visit Date</label>
+            <input type="date" id="prefDate" name="prefDate" required />
+          </div>
+          <div class="form-group">
+            <label for="prefTime">Preferred Time</label>
+            <select id="prefTime" name="prefTime" required>
+              <option value="" disabled selected>Choose a time slot</option>
+              <option value="morning">Morning (8:00 AM – 12:00 PM)</option>
+              <option value="afternoon">Afternoon (1:00 PM – 5:00 PM)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Additional Notes (Optional)</label>
+          <textarea id="notes" name="notes"
+            placeholder="Describe your space, inspiration, or any specific requirements..."></textarea>
+        </div>
+
+        <p class="form-note">
+          <strong>Note:</strong> This form submits a consultation request only — not a final order. Our team will review
+          your details and reach out to confirm your appointment and provide an accurate quote.
+        </p>
+
+        <div class="form-submit-row">
+          <button type="submit" class="btn btn-primary">Submit Request →</button>
+          <span style="font-size:0.75rem; color: var(--mist);">We'll confirm within 24 hours.</span>
+        </div>
+
+        <!-- Success message (shown after submit) -->
+        <div class="form-success" id="formSuccess">
+          <strong>Request Received!</strong>
+          Thank you! We've received your appointment request and will get in touch within 24 hours to confirm your
+          schedule. Looking forward to working with you.
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       WHY BOOK A VISIT
+  ══════════════════════════════════════════════ -->
+  <section class="why-book">
+    <div class="why-book-inner">
+      <span class="section-label" style="justify-content: center;">Why a Site Visit Matters</span>
+      <h2 class="section-title">Built on <em>Accuracy</em></h2>
+      <div class="perks-grid">
+        <div class="perk-card">
+          <div class="perk-icon">📐</div>
+          <h3>Precise Measurements</h3>
+          <p>Every space is unique. An on-site visit ensures we capture exact dimensions so your furniture fits
+            perfectly without any costly surprises.</p>
+        </div>
+        <div class="perk-card">
+          <div class="perk-icon">🤝</div>
+          <h3>Personal Consultation</h3>
+          <p>Meet our craftsmen face-to-face, ask questions, and walk us through your vision. We tailor every design to
+            your lifestyle and preferences.</p>
+        </div>
+        <div class="perk-card">
+          <div class="perk-icon">💸</div>
+          <h3>Transparent Pricing</h3>
+          <p>After the visit, you'll receive a detailed, no-obligation quote. No hidden fees — just an honest breakdown
+            of materials, labor, and timeline.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="wordmark">LiFurniture</div>
+        <p>A family-operated workshop dedicated to custom cabinets, drawers, and built-in storage solutions. Based in
+          Valenzuela City — serving Metro Manila.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="collections.html">Collections</a></li>
+          <li><a href="appointments.html">Appointments</a></li>
+          <li><a href="about.html">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#">Custom Cabinets</a></li>
+          <li><a href="#">Drawer Units</a></li>
+          <li><a href="#">Built-in Storage</a></li>
+          <li><a href="#">Site Measurement</a></li>
+          <li><a href="#">Full Installation</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:+639692643545">+63 969 264 3545</a></li>
+          <li><a href="mailto:info@lifurniture.ph">info@lifurniture.ph</a></li>
+          <li><a href="#">Facebook Page</a></li>
+          <li><a href="#">Valenzuela City, Metro Manila</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 LiFurniture. All rights reserved.</span>
+      <span>WS101 – Web Systems and Technology I · BSIT 2-3</span>
+    </div>
+  </footer>
+
+  <script>
+    // ── Navbar ──
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+      if (window.scrollY <= 40) nav.classList.add('scrolled');
+    });
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+
+    // ── Set min date to today ──
+    const dateInput = document.getElementById('prefDate');
+    dateInput.min = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+
+    // ── Form submission — POST to backend ──
+    document.getElementById('apptForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const btn = this.querySelector('button[type="submit"]');
+      btn.textContent = 'Sending…';
+      btn.disabled = true;
+
+      const formData = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        address: document.getElementById('address').value,
+        service: document.getElementById('service').value,
+        budget: document.getElementById('budget').value,
+        prefDate: document.getElementById('prefDate').value,
+        prefTime: document.getElementById('prefTime').value,
+        notes: document.getElementById('notes').value,
+      };
+
+      try {
+        const res = await fetch('/api/appointments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          document.getElementById('formSuccess').style.display = 'block';
+          btn.style.display = 'none';
+          document.querySelectorAll('#apptForm input, #apptForm select, #apptForm textarea')
+            .forEach(el => el.disabled = true);
+        } else {
+          btn.textContent = 'Submit Request →';
+          btn.disabled = false;
+          alert('Error: ' + result.message);
+        }
+      } catch (err) {
+        btn.textContent = 'Submit Request →';
+        btn.disabled = false;
+        alert('Server error. Is the backend running?');
+      }
+    });
+  </script>
+</body>
+
+</html>

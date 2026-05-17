@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiFurniture – Custom Made-to-Order Furniture</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       NAVIGATION
+  ══════════════════════════════════════════════ -->
+  <nav class="nav" id="mainNav">
+    <a href="index.html" class="nav-logo">
+      <span class="wordmark">LiFurniture</span>
+      <span class="tagline">Made-to-Order · Est. 2015</span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="collections.html">Collections</a></li>
+      <li><a href="appointments.html">Appointments</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="appointments.html" class="nav-cta">Book a Visit</a></li>
+    </ul>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+
+    <div class="hero-badge">
+      <div class="badge-inner">
+        <span class="badge-num">10+</span>
+        <span class="badge-text">Years of<br>Craft</span>
+      </div>
+    </div>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow">Custom Furniture · Valenzuela City</p>
+      <h1 class="hero-title">
+        Furniture Built<br>
+        Around <em>Your</em> Space
+      </h1>
+      <p class="hero-sub">
+        Every cabinet, drawer, and storage unit we make is designed specifically for your home — measured, crafted, and installed by our family workshop.
+      </p>
+      <div class="hero-actions">
+        <a href="collections.html" class="btn btn-primary">Browse Our Work</a>
+        <a href="appointments.html" class="btn btn-outline">Book a Site Visit</a>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">30+</div>
+        <div class="stat-label">Projects Done</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Custom Fit</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">10yrs</div>
+        <div class="stat-label">Experience</div>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       FEATURED PROJECTS
+  ══════════════════════════════════════════════ -->
+  <section class="featured">
+    <div class="featured-header">
+      <div>
+        <span class="section-label">Our Work</span>
+        <h2 class="section-title">Featured <em>Projects</em></h2>
+      </div>
+      <a href="collections.html" class="right">View all collections →</a>
+    </div>
+
+    <div class="projects-grid">
+      <!-- Large featured card -->
+      <div class="project-card" onclick="window.location='collections.html'">
+        <img src="ac0e2aaa-6d4c-47e2-8f01-ba2731baf892.jpg" alt="Kitchen Storage Cabinet Set" height="300px"/>
+        <div class="card-overlay">
+          <p class="card-tag">Cabinets · Full Room</p>
+          <h3 class="card-title">Kitchen Storage<br>Cabinet Set</h3>
+          <p class="card-detail">Solid Acacia · Floor-to-ceiling · Valenzuela</p>
+        </div>
+      </div>
+
+      <!-- Smaller cards -->
+      <div class="project-card" onclick="window.location='collections.html'">
+        <img src="20260515_171329.jpg" alt="Wardrobe Cabinet" />
+        <div class="card-overlay">
+          <p class="card-tag">Drawers</p>
+          <h3 class="card-title">Bed with<br>Drawers</h3>
+          <p class="card-detail">Narra Wood · 9-drawer unit</p>
+        </div>
+      </div>
+
+      <div class="project-card" onclick="window.location='collections.html'">
+        <img src="70354f5c-8db7-4c45-8dd9-b9d88ff8075f.jpg" alt=" Cabinet" />
+        <div class="card-overlay">
+          <p class="card-tag">Storage · Built-in</p>
+          <h3 class="card-title">Built-in Wall<br>Storage Unit</h3>
+          <p class="card-detail">Plywood + Veneer · Bedroom room</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       WHY CHOOSE US
+  ══════════════════════════════════════════════ -->
+  <section class="why-us">
+    <div class="why-grid">
+      <div class="why-left">
+        <span class="section-label" style="color: var(--honey);">Why LiFurniture</span>
+        <h2 class="section-title" style="color: var(--cream);">
+          Crafted With<br><em>Purpose</em>
+        </h2>
+        <p class="why-desc">
+          We don't do mass production. Every piece is made after a proper site visit, accurate measurements, and a thorough consultation — so what we build actually fits your home perfectly.
+        </p>
+      </div>
+
+      <div class="why-cards">
+        <div class="why-card">
+          <span class="card-num">01</span>
+          <div class="why-icon">📐</div>
+          <h3>Site-Measured</h3>
+          <p>Every project starts with a professional on-site visit and precise measurements — no guesswork, no re-dos.</p>
+        </div>
+        <div class="why-card">
+          <span class="card-num">02</span>
+          <div class="why-icon">🪵</div>
+          <h3>Quality Materials</h3>
+          <p>We use solid hardwood, quality plyboard, and durable hardware that stands the test of daily use for years.</p>
+        </div>
+        <div class="why-card">
+          <span class="card-num">03</span>
+          <div class="why-icon">🏠</div>
+          <h3>Full Installation</h3>
+          <p>We handle everything from delivery to final installation — you don't have to lift a finger.</p>
+        </div>
+        <div class="why-card">
+          <span class="card-num">04</span>
+          <div class="why-icon">👨‍👩‍👧</div>
+          <h3>Family Workshop</h3>
+          <p>A family-run business since 2015 — every project is handled with personal care and craftsmanship pride.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       OUR PROCESS
+  ══════════════════════════════════════════════ -->
+  <section class="process">
+    <div class="process-title">
+      <span class="section-label" style="justify-content: center;">How It Works</span>
+      <h2 class="section-title" style="text-align: center;">From <em>Inquiry</em> to Installation</h2>
+    </div>
+    <div class="process-steps">
+      <div class="step">
+        <div class="step-dot">1</div>
+        <h4>Book a Visit</h4>
+        <p>Submit your inquiry online or call us to schedule a free on-site consultation.</p>
+      </div>
+      <div class="step">
+        <div class="step-dot">2</div>
+        <h4>Site Measurement</h4>
+        <p>Our team visits your home, takes precise measurements, and notes your requirements.</p>
+      </div>
+      <div class="step">
+        <div class="step-dot">3</div>
+        <h4>Design & Quote</h4>
+        <p>We prepare a design plan and a transparent price quote for your approval.</p>
+      </div>
+      <div class="step">
+        <div class="step-dot">4</div>
+        <h4>Build & Install</h4>
+        <p>We craft your furniture and handle full installation right in your space.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       CTA BANNER
+  ══════════════════════════════════════════════ -->
+  <section class="cta-banner">
+    <div class="cta-text">
+      <span class="section-label">Get Started</span>
+      <h2 class="section-title" style="color: var(--cream);">
+        Ready to Transform<br><em>Your Space?</em>
+      </h2>
+      <p class="cta-sub">Book a free site visit and let us measure your space — no commitment required.</p>
+    </div>
+    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+      <a href="appointments.html" class="btn btn-primary">Book a Free Visit</a>
+      <a href="collections.html" class="btn btn-outline">See Our Work</a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="wordmark">LiFurniture</div>
+        <p>A family-operated workshop dedicated to custom cabinets, drawers, and built-in storage solutions. Based in Valenzuela City — serving Metro Manila.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="collections.html">Collections</a></li>
+          <li><a href="appointments.html">Appointments</a></li>
+          <li><a href="about.html">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#">Custom Cabinets</a></li>
+          <li><a href="#">Drawer Units</a></li>
+          <li><a href="#">Built-in Storage</a></li>
+          <li><a href="#">Site Measurement</a></li>
+          <li><a href="#">Full Installation</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:+639692643545">+63 969 264 3545</a></li>
+          <li><a href="mailto:info@lifurniture.ph">info@lifurniture.ph</a></li>
+          <li><a href="#">Facebook Page</a></li>
+          <li><a href="#">Valenzuela City, Metro Manila</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 LiFurniture. All rights reserved.</span>
+      <span>WS101 – Web Systems and Technology I · BSIT 2-3</span>
+    </div>
+  </footer>
+
+  <script>
+    // ── Navbar scroll effect ──
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+
+    // ── Mobile toggle ──
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

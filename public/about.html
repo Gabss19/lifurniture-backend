@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us – LiFurniture</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── About page-specific styles ── */
+
+    /* ── Story Section ── */
+    .about-story {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      min-height: 540px;
+    }
+
+    .story-visual {
+      background: linear-gradient(150deg, #4A2512 0%, #2C1A0E 50%, #6B3520 100%);
+      position: relative;
+      overflow: hidden;
+      min-height: 460px;
+    }
+
+    /* Wood grain texture on visual panel */
+    .story-visual::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        94deg,
+        transparent 0px, transparent 20px,
+        rgba(255,255,255,0.018) 20px, rgba(255,255,255,0.018) 21px
+      ),
+      repeating-linear-gradient(
+        180deg,
+        transparent 0px, transparent 55px,
+        rgba(0,0,0,0.04) 55px, rgba(0,0,0,0.04) 57px
+      );
+      pointer-events: none;
+    }
+
+    .story-visual-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 48px 56px;
+      z-index: 1;
+      background: linear-gradient(to top, rgba(26,18,8,0.7) 0%, transparent 60%);
+    }
+
+    .story-stat-row {
+      display: flex;
+      gap: 40px;
+    }
+
+    .story-stat {
+      text-align: center;
+    }
+
+    .story-stat .num {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 600;
+      color: var(--honey);
+      line-height: 1;
+    }
+
+    .story-stat .label {
+      font-size: 0.6rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--mist);
+      margin-top: 6px;
+    }
+
+    /* Decorative ring */
+    .story-ring {
+      position: absolute;
+      top: 48px; right: 48px;
+      width: 120px; height: 120px;
+      border: 1px solid rgba(212,137,74,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .story-ring span {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--honey);
+      line-height: 1.5;
+      letter-spacing: 0.05em;
+    }
+
+    .story-text {
+      background: var(--parchment);
+      padding: 80px 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .story-text p {
+      font-size: 0.9rem;
+      color: var(--cedar);
+      line-height: 1.9;
+      font-weight: 300;
+      margin-bottom: 20px;
+    }
+
+    .story-text p:last-child { margin-bottom: 0; }
+
+    /* ── Mission / Values ── */
+    .values-section {
+      background: var(--walnut);
+      padding: 100px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .values-section::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,137,74,0.07) 0%, transparent 70%);
+    }
+
+    .values-header {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+
+    .values-header .section-title { color: var(--cream); }
+    .values-header .section-title em { color: var(--honey); }
+
+    .values-header p {
+      font-size: 0.9rem;
+      color: var(--mist);
+      margin-top: 16px;
+      font-weight: 300;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.7;
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+
+    .value-card {
+      padding: 48px 36px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(212,137,74,0.1);
+      transition: background var(--transition);
+      text-align: center;
+    }
+
+    .value-card:hover { background: rgba(212,137,74,0.07); }
+
+    .value-icon {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+    }
+
+    .value-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 12px;
+    }
+
+    .value-card p {
+      font-size: 0.8rem;
+      color: var(--mist);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ── Materials ── */
+    .materials-section {
+      background: var(--linen);
+      padding: 100px 48px;
+    }
+
+    .materials-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .materials-left .section-title { margin-bottom: 20px; }
+
+    .materials-left p {
+      font-size: 0.88rem;
+      color: var(--cedar);
+      line-height: 1.8;
+      font-weight: 300;
+    }
+
+    .materials-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .material-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      border: 1px solid rgba(44,26,14,0.06);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .material-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(44,26,14,0.09);
+    }
+
+    .material-swatch {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      margin-bottom: 14px;
+    }
+
+    .material-card h4 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--walnut);
+      margin-bottom: 6px;
+    }
+
+    .material-card p {
+      font-size: 0.78rem;
+      color: var(--cedar);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    /* ── Team ── */
+    .team-section {
+      background: var(--parchment);
+      padding: 100px 48px;
+    }
+
+    .team-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .team-header p {
+      font-size: 0.9rem;
+      color: var(--cedar);
+      margin-top: 12px;
+      font-weight: 300;
+      max-width: 480px;
+      margin-left: auto; margin-right: auto;
+      line-height: 1.7;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .team-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(44,26,14,0.06);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .team-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(44,26,14,0.1);
+    }
+
+    .team-avatar {
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      position: relative;
+    }
+
+    .team-card:nth-child(1) .team-avatar { background: linear-gradient(140deg, #5C3317 0%, #3D2010 100%); }
+    .team-card:nth-child(2) .team-avatar { background: linear-gradient(140deg, #4A2810 0%, #7B4020 100%); }
+    .team-card:nth-child(3) .team-avatar { background: linear-gradient(140deg, #7B4520 0%, #4A2512 100%); }
+
+    .team-info {
+      padding: 24px 28px;
+    }
+
+    .team-info h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--walnut);
+      margin-bottom: 4px;
+    }
+
+    .team-info .role {
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--honey);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .team-info p {
+      font-size: 0.8rem;
+      color: var(--cedar);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    /* ── FAQ ── */
+    .faq-section {
+      background: var(--linen);
+      padding: 100px 48px;
+    }
+
+    .faq-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .faq-item {
+      background: var(--white);
+      border: 1px solid rgba(44,26,14,0.07);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 28px;
+      cursor: pointer;
+      user-select: none;
+      transition: background var(--transition);
+    }
+
+    .faq-question:hover { background: var(--parchment); }
+
+    .faq-question h4 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--walnut);
+    }
+
+    .faq-toggle {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(212,137,74,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      color: var(--honey);
+      flex-shrink: 0;
+      transition: transform var(--transition), background var(--transition);
+    }
+
+    .faq-item.open .faq-toggle {
+      transform: rotate(45deg);
+      background: var(--honey);
+      color: var(--walnut);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+      padding: 0 28px;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+      padding: 0 28px 22px;
+    }
+
+    .faq-answer p {
+      font-size: 0.85rem;
+      color: var(--cedar);
+      line-height: 1.8;
+      font-weight: 300;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .about-story { grid-template-columns: 1fr; }
+      .story-text { padding: 64px 48px; }
+      .values-grid { grid-template-columns: 1fr 1fr; }
+      .materials-inner { grid-template-columns: 1fr; gap: 48px; }
+      .team-grid { grid-template-columns: 1fr 1fr; max-width: 640px; }
+    }
+
+    @media (max-width: 768px) {
+      .about-story { grid-template-columns: 1fr; }
+      .story-text { padding: 56px 24px; }
+      .values-section,
+      .materials-section,
+      .team-section,
+      .faq-section { padding: 64px 24px; }
+      .values-grid { grid-template-columns: 1fr; }
+      .materials-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr; max-width: 380px; }
+      .story-ring { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       NAVIGATION
+  ══════════════════════════════════════════════ -->
+  <nav class="nav scrolled" id="mainNav">
+    <a href="index.html" class="nav-logo">
+      <span class="wordmark">LiFurniture</span>
+      <span class="tagline">Made-to-Order · Est. 2015</span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="collections.html">Collections</a></li>
+      <li><a href="appointments.html">Appointments</a></li>
+      <li><a href="about.html" class="active">About Us</a></li>
+      <li><a href="appointments.html" class="nav-cta">Book a Visit</a></li>
+    </ul>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════
+       PAGE HERO
+  ══════════════════════════════════════════════ -->
+  <section class="page-hero" style="padding-top: var(--nav-h);">
+    <div class="page-hero-content">
+      <span class="section-label" style="color: var(--honey); margin-bottom: 12px;">Our Story</span>
+      <h1 class="page-hero-title">About <em>LiFurniture</em></h1>
+      <p class="page-hero-sub">A family workshop built on craftsmanship, precision, and a genuine care for your home.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       STORY SECTION
+  ══════════════════════════════════════════════ -->
+  <div class="about-story">
+
+    <!-- Visual / Stats panel -->
+    <div class="story-visual">
+      <div class="story-ring">
+        <span>Est.<br>2015<br>Valenzuela</span>
+      </div>
+      <div class="story-visual-inner">
+        <div class="story-stat-row">
+          <div class="story-stat">
+            <div class="num">10+</div>
+            <div class="label">Years of Craft</div>
+          </div>
+          <div class="story-stat">
+            <div class="num">30+</div>
+            <div class="label">Projects Done</div>
+          </div>
+          <div class="story-stat">
+            <div class="num">100%</div>
+            <div class="label">Custom Fit</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text panel -->
+    <div class="story-text">
+      <span class="section-label">Who We Are</span>
+      <h2 class="section-title" style="margin-bottom: 32px;">Crafted with <em>Heart</em>,<br>Built to Last</h2>
+      <p>
+        LiFurniture began in 2015 as a small family-run carpentry workshop in Valenzuela City. What started as a passion for precision woodworking has grown into a trusted name for custom furniture across Metro Manila. Every piece we build carries the same dedication and personal attention we put into our very first project.
+      </p>
+      <p>
+        We specialize in made-to-order cabinets, drawer units, and built-in storage solutions. Unlike mass-produced furniture, every item we create begins with a proper site visit — we come to your home, measure your space, listen to your needs, and design something that fits perfectly, both physically and aesthetically.
+      </p>
+      <p>
+        Our workshop uses solid hardwood, quality plyboard, and durable hardware selected for long-term performance. We believe furniture should not just look good — it should be built to withstand daily life for years to come. That commitment to quality, from the first consultation through final installation, is what sets us apart.
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       VALUES / MISSION
+  ══════════════════════════════════════════════ -->
+  <section class="values-section">
+    <div class="values-header">
+      <span class="section-label" style="justify-content: center; color: var(--honey);">What We Stand For</span>
+      <h2 class="section-title">Our Core <em>Values</em></h2>
+      <p>Every decision we make — from the wood we select to how we interact with clients — is guided by these principles.</p>
+    </div>
+
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">📐</div>
+        <h3>Precision</h3>
+        <p>We don't guess measurements. Every project starts with a professional on-site visit and careful documentation of your space.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🪵</div>
+        <h3>Quality</h3>
+        <p>We use solid hardwood, premium plyboard, and trusted hardware. No shortcuts — only materials that stand the test of time.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🤝</div>
+        <h3>Integrity</h3>
+        <p>Transparent pricing, honest timelines, and clear communication from consultation to installation — always.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">❤️</div>
+        <h3>Care</h3>
+        <p>As a family workshop, we treat every client's home as our own — with the respect and personal attention it deserves.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       MATERIALS
+  ══════════════════════════════════════════════ -->
+  <section class="materials-section">
+    <div class="materials-inner">
+      <div class="materials-left">
+        <span class="section-label">What We Use</span>
+        <h2 class="section-title">Premium <em>Materials</em></h2>
+        <p>
+          We source only trusted, locally available materials chosen for durability, workability, and appearance. From solid Philippine hardwood to engineered boards, every material is selected with your furniture's long-term performance in mind.
+        </p>
+      </div>
+
+      <div class="materials-grid">
+        <div class="material-card">
+          <div class="material-swatch" style="background: linear-gradient(135deg, #6B4220 0%, #4A2C12 100%);"></div>
+          <h4>Narra Wood</h4>
+          <p>A Philippine hardwood prized for its rich reddish-brown tone and natural durability. Ideal for premium drawer units and accent pieces.</p>
+        </div>
+        <div class="material-card">
+          <div class="material-swatch" style="background: linear-gradient(135deg, #8B6040 0%, #5A3A20 100%);"></div>
+          <h4>Acacia Wood</h4>
+          <p>Locally sourced, dense, and highly resistant to moisture. A popular choice for kitchen cabinets and high-use storage units.</p>
+        </div>
+        <div class="material-card">
+          <div class="material-swatch" style="background: linear-gradient(135deg, #C8A87A 0%, #9A7B50 100%);"></div>
+          <h4>Marine Plywood</h4>
+          <p>Moisture-resistant and structurally stable. Commonly used for under-sink cabinets and areas exposed to humidity.</p>
+        </div>
+        <div class="material-card">
+          <div class="material-swatch" style="background: linear-gradient(135deg, #E0D0B8 0%, #C0A880 100%);"></div>
+          <h4>Melamine Board</h4>
+          <p>A cost-effective engineered board with a smooth, easy-to-clean surface. Available in various finishes for modern cabinetry.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       TEAM
+  ══════════════════════════════════════════════ -->
+  <section class="team-section">
+    <div class="team-header">
+      <span class="section-label" style="justify-content: center;">The People Behind the Work</span>
+      <h2 class="section-title">Meet the <em>Team</em></h2>
+      <p>A tight-knit family team that handles everything from design consultation to the final installation — all under one roof.</p>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">🪚</div>
+        <div class="team-info">
+          <h3>Lito Lomboy</h3>
+          <p class="role">Founder · Master Craftsman</p>
+          <p>With over a decade of hands-on carpentry experience, Gabriel oversees all project planning, material selection, and quality control from start to finish.</p>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">📏</div>
+        <div class="team-info">
+          <h3>Joy</h3>
+          <p class="role">Design & Client Relations</p>
+          <p>Ron handles site consultations, design proposals, and client communication — ensuring every detail is captured accurately before a single cut is made.</p>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🔨</div>
+        <div class="team-info">
+          <h3>The Workshop Team</h3>
+          <p class="role">Build & Installation</p>
+          <p>Our experienced carpenters and installers bring every design to life — from precision cutting in our Valenzuela workshop to on-site installation in your home.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       FAQ
+  ══════════════════════════════════════════════ -->
+  <section class="faq-section">
+    <div class="faq-inner">
+      <div class="faq-header">
+        <span class="section-label" style="justify-content: center;">Common Questions</span>
+        <h2 class="section-title">Frequently Asked <em>Questions</em></h2>
+      </div>
+
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <h4>How long does a typical project take?</h4>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Project timelines vary depending on complexity and materials. A standard cabinet unit typically takes 2–3 weeks from design approval to installation. Larger or more complex projects (such as full kitchen sets or multi-room builds) may take 4–6 weeks. We'll give you an accurate timeline after the site visit.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <h4>Is the site visit really free?</h4>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Yes, absolutely. The initial consultation and site visit — including measurements and a preliminary design discussion — are completely free of charge with no obligation to proceed. We only begin charging once you formally approve the design and quote.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <h4>What areas do you serve?</h4>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Our workshop is based in Valenzuela City, and we serve all areas within Metro Manila including Quezon City, Caloocan, Malabon, Navotas, and surrounding cities. For areas outside Metro Manila, please reach out to us directly and we'll see what we can arrange.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <h4>Can I choose my own materials or finish?</h4>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Definitely. Part of our consultation process is discussing your material preferences, color or finish options, and hardware choices. We'll present you with samples and guide you toward the best options for your budget and space.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <h4>Do you offer a warranty on your work?</h4>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Yes. We stand behind the quality of our craftsmanship. All our completed installations come with a workmanship warranty covering structural issues and installation defects. Details are included in your project agreement. We're always available for after-service support as well.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <h4>What is your payment arrangement?</h4>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>We typically work on a milestone-based payment structure: a downpayment upon project approval, a progress payment when production begins, and the final balance upon installation completion. Full payment terms are discussed and agreed upon before any work begins.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       CTA BANNER
+  ══════════════════════════════════════════════ -->
+  <section class="cta-banner" style="padding: 80px 48px;">
+    <div class="cta-text">
+      <span class="section-label">Ready to Start?</span>
+      <h2 class="section-title" style="color: var(--cream);">
+        Let's Build Something<br><em>Together</em>
+      </h2>
+      <p class="cta-sub">Book a free, no-obligation site visit and let's talk about your space.</p>
+    </div>
+    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+      <a href="appointments.html" class="btn btn-primary">Book a Free Visit</a>
+      <a href="collections.html" class="btn btn-outline">See Our Work</a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="wordmark">LiFurniture</div>
+        <p>A family-operated workshop dedicated to custom cabinets, drawers, and built-in storage solutions. Based in Valenzuela City — serving Metro Manila.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="collections.html">Collections</a></li>
+          <li><a href="appointments.html">Appointments</a></li>
+          <li><a href="about.html">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#">Custom Cabinets</a></li>
+          <li><a href="#">Drawer Units</a></li>
+          <li><a href="#">Built-in Storage</a></li>
+          <li><a href="#">Site Measurement</a></li>
+          <li><a href="#">Full Installation</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:+639692643545">+63 969 264 3545</a></li>
+          <li><a href="mailto:info@lifurniture.ph">info@lifurniture.ph</a></li>
+          <li><a href="#">Facebook Page</a></li>
+          <li><a href="#">Valenzuela City, Metro Manila</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 LiFurniture. All rights reserved.</span>
+      <span>WS101 – Web Systems and Technology I · BSIT 2-3</span>
+    </div>
+  </footer>
+
+  <script>
+    // ── Navbar ──
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+      if (window.scrollY <= 40) nav.classList.add('scrolled');
+    });
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+
+    // ── FAQ accordion ──
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.querySelector('.faq-question').addEventListener('click', () => {
+        const isOpen = item.classList.contains('open');
+        // Close all
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        // Toggle clicked
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+  </script>
+</body>
+</html>

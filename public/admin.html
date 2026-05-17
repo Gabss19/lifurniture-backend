@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Dashboard – LiFurniture</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #FAF7F2; color: #2C1A0E; }
+
+  .topbar {
+    background: #2C1A0E; padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .topbar h1 { color: #F5EFE6; font-size: 1.2rem; font-weight: 300; }
+  .topbar h1 span { color: #D4894A; font-style: italic; }
+
+  .main { padding: 32px; max-width: 1100px; margin: 0 auto; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+  .stat-card { background: white; border-radius: 12px; padding: 24px; border: 1px solid rgba(44,26,14,0.08); }
+  .stat-card .label { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: #A89880; margin-bottom: 8px; }
+  .stat-card .num { font-size: 2rem; font-weight: 300; color: #2C1A0E; }
+
+  .refresh-btn {
+    padding: 10px 24px; background: #2C1A0E; color: #F5EFE6;
+    border: none; border-radius: 8px; font-size: 0.85rem; cursor: pointer;
+    margin-bottom: 20px;
+  }
+  .refresh-btn:hover { background: #B5651D; }
+
+  .table-wrap { background: white; border-radius: 12px; overflow: hidden; border: 1px solid rgba(44,26,14,0.08); }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: #2C1A0E; color: #F5EFE6;
+    padding: 14px 16px; font-size: 0.7rem; letter-spacing: 0.1em;
+    text-transform: uppercase; text-align: left;
+  }
+  tbody tr { border-bottom: 1px solid rgba(44,26,14,0.06); }
+  tbody tr:hover { background: #F0EBE3; }
+  td { padding: 14px 16px; font-size: 0.84rem; vertical-align: middle; }
+  td .sub { font-size: 0.75rem; color: #A89880; margin-top: 2px; }
+
+  .loading { text-align: center; padding: 40px; color: #A89880; }
+  .empty { text-align: center; padding: 60px; color: #A89880; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Li<span>Furniture</span> — Admin Dashboard</h1>
+</div>
+
+<div class="main">
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="label">Total Appointments</div>
+      <div class="num" id="statTotal">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Latest Submission</div>
+      <div class="num" id="statLatest" style="font-size:1rem; padding-top:8px;">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Status</div>
+      <div class="num" style="color:#2d7a45; font-size:1rem; padding-top:8px;">● Live</div>
+    </div>
+  </div>
+
+  <button class="refresh-btn" onclick="loadAppointments()">↻ Refresh</button>
+
+  <div class="table-wrap">
+    <div class="loading" id="loading">Loading appointments…</div>
+    <table id="apptTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Contact</th>
+          <th>Address</th>
+          <th>Project</th>
+          <th>Schedule</th>
+          <th>Submitted</th>
+        </tr>
+      </thead>
+      <tbody id="apptBody"></tbody>
+    </table>
+    <div class="empty" id="emptyState" style="display:none;">No appointments yet.</div>
+  </div>
+</div>
+
+<script>
+const pwd = prompt('Enter admin password:');
+if (pwd !== 'lifurniture2025') {
+  document.body.innerHTML = '<h2 style="text-align:center;margin-top:100px;">Access Denied</h2>';
+  throw new Error('Unauthorized');
+}
+
+const serviceLabels = {
+  cabinets: 'Custom Cabinets', drawers: 'Drawer Units',
+  storage: 'Built-in Storage', kitchen: 'Kitchen Cabinets',
+  combo: 'Multiple/Combo', other: 'Other'
+};
+const timeLabels = {
+  morning: 'Morning (8AM–12PM)',
+  afternoon: 'Afternoon (1PM–5PM)'
+};
+
+async function loadAppointments() {
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('apptTable').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'none';
+
+  try {
+    const res = await fetch('/api/appointments');
+    const data = await res.json();
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('statTotal').textContent = data.length;
+
+    if (data.length === 0) {
+      document.getElementById('emptyState').style.display = 'block';
+      return;
+    }
+
+    // Latest submission
+    const latest = new Date(data[0].createdAt);
+    document.getElementById('statLatest').textContent =
+      latest.toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
+
+    const tbody = document.getElementById('apptBody');
+    tbody.innerHTML = '';
+
+    data.forEach((a, i) => {
+      const submitted = new Date(a.createdAt).toLocaleDateString('en-PH', {
+        month: 'short', day: 'numeric', year: 'numeric'
+      });
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${i + 1}</td>
+        <td>
+          <div><strong>${a.firstName} ${a.lastName}</strong></div>
+        </td>
+        <td>
+          <div>${a.phone}</div>
+          <div class="sub">${a.email}</div>
+        </td>
+        <td>${a.address}</td>
+        <td>
+          <div>${serviceLabels[a.service] || a.service}</div>
+          <div class="sub">${a.budget || '—'}</div>
+        </td>
+        <td>
+          <div>${a.prefDate}</div>
+          <div class="sub">${timeLabels[a.prefTime] || a.prefTime}</div>
+        </td>
+        <td>${submitted}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('apptTable').style.display = 'table';
+  } catch (err) {
+    document.getElementById('loading').textContent = '❌ Failed to load. Is the server running?';
+  }
+}
+
+loadAppointments();
+</script>
+</body>
+</html>
