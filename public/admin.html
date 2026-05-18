@@ -9,46 +9,104 @@
   body { font-family: 'Segoe UI', sans-serif; background: #FAF7F2; color: #2C1A0E; }
 
   .topbar {
-    background: #2C1A0E; padding: 16px 32px;
+    background: #2C1A0E; padding: 16px 24px;
     display: flex; align-items: center; justify-content: space-between;
   }
-  .topbar h1 { color: #F5EFE6; font-size: 1.2rem; font-weight: 300; }
+  .topbar h1 { color: #F5EFE6; font-size: 1.1rem; font-weight: 300; }
   .topbar h1 span { color: #D4894A; font-style: italic; }
 
-  .main { padding: 32px; max-width: 1100px; margin: 0 auto; }
+  .main { padding: 20px; max-width: 1100px; margin: 0 auto; }
 
-  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
-  .stat-card { background: white; border-radius: 12px; padding: 24px; border: 1px solid rgba(44,26,14,0.08); }
-  .stat-card .label { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: #A89880; margin-bottom: 8px; }
-  .stat-card .num { font-size: 2rem; font-weight: 300; color: #2C1A0E; }
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: white; border-radius: 12px; padding: 16px;
+    border: 1px solid rgba(44,26,14,0.08);
+  }
+  .stat-card .label {
+    font-size: 0.65rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #A89880; margin-bottom: 6px;
+  }
+  .stat-card .num { font-size: 1.6rem; font-weight: 300; color: #2C1A0E; }
 
   .refresh-btn {
-    padding: 10px 24px; background: #2C1A0E; color: #F5EFE6;
+    padding: 10px 20px; background: #2C1A0E; color: #F5EFE6;
     border: none; border-radius: 8px; font-size: 0.85rem; cursor: pointer;
-    margin-bottom: 20px;
+    margin-bottom: 16px; width: 100%;
   }
   .refresh-btn:hover { background: #B5651D; }
 
-  .table-wrap { background: white; border-radius: 12px; overflow: hidden; border: 1px solid rgba(44,26,14,0.08); }
+  /* Desktop table */
+  .table-wrap {
+    background: white; border-radius: 12px;
+    overflow: hidden; border: 1px solid rgba(44,26,14,0.08);
+  }
   table { width: 100%; border-collapse: collapse; }
   thead th {
     background: #2C1A0E; color: #F5EFE6;
-    padding: 14px 16px; font-size: 0.7rem; letter-spacing: 0.1em;
+    padding: 12px 14px; font-size: 0.65rem; letter-spacing: 0.1em;
     text-transform: uppercase; text-align: left;
   }
   tbody tr { border-bottom: 1px solid rgba(44,26,14,0.06); }
   tbody tr:hover { background: #F0EBE3; }
-  td { padding: 14px 16px; font-size: 0.84rem; vertical-align: middle; }
-  td .sub { font-size: 0.75rem; color: #A89880; margin-top: 2px; }
+  td { padding: 12px 14px; font-size: 0.82rem; vertical-align: middle; }
+  td .sub { font-size: 0.72rem; color: #A89880; margin-top: 2px; }
 
   .loading { text-align: center; padding: 40px; color: #A89880; }
   .empty { text-align: center; padding: 60px; color: #A89880; }
+
+  /* Mobile cards — hidden on desktop */
+  .cards-wrap { display: none; }
+  .appt-card {
+    background: white; border-radius: 12px; padding: 16px;
+    border: 1px solid rgba(44,26,14,0.08); margin-bottom: 12px;
+  }
+  .appt-card .card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .appt-card .card-name { font-weight: 600; font-size: 0.95rem; }
+  .appt-card .card-num {
+    background: #2C1A0E; color: #F5EFE6;
+    border-radius: 20px; padding: 2px 10px; font-size: 0.72rem;
+  }
+  .appt-card .card-row {
+    display: flex; gap: 8px; margin-bottom: 6px;
+    font-size: 0.82rem; align-items: flex-start;
+  }
+  .appt-card .card-row .card-label {
+    min-width: 72px; font-size: 0.65rem; text-transform: uppercase;
+    letter-spacing: 0.08em; color: #A89880; padding-top: 2px;
+  }
+  .appt-card .card-row .card-val { color: #2C1A0E; }
+  .appt-card .card-row .card-sub { font-size: 0.72rem; color: #A89880; }
+
+  /* Responsive breakpoints */
+  @media (max-width: 700px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .stats-row .stat-card:last-child { grid-column: span 2; }
+    .stat-card .num { font-size: 1.3rem; }
+
+    /* Hide table, show cards */
+    .table-wrap { display: none; }
+    .cards-wrap { display: block; }
+  }
+
+  @media (max-width: 400px) {
+    .stats-row { grid-template-columns: 1fr; }
+    .stats-row .stat-card:last-child { grid-column: span 1; }
+    .topbar h1 { font-size: 0.95rem; }
+  }
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <h1>Li<span>Furniture</span> — Admin Dashboard</h1>
+  <h1>Li<span>Furniture</span> — Admin</h1>
 </div>
 
 <div class="main">
@@ -59,16 +117,17 @@
     </div>
     <div class="stat-card">
       <div class="label">Latest Submission</div>
-      <div class="num" id="statLatest" style="font-size:1rem; padding-top:8px;">—</div>
+      <div class="num" id="statLatest" style="font-size:0.95rem; padding-top:4px;">—</div>
     </div>
     <div class="stat-card">
       <div class="label">Status</div>
-      <div class="num" style="color:#2d7a45; font-size:1rem; padding-top:8px;">● Live</div>
+      <div class="num" style="color:#2d7a45; font-size:0.95rem; padding-top:4px;">● Live</div>
     </div>
   </div>
 
   <button class="refresh-btn" onclick="loadAppointments()">↻ Refresh</button>
 
+  <!-- Desktop table -->
   <div class="table-wrap">
     <div class="loading" id="loading">Loading appointments…</div>
     <table id="apptTable" style="display:none;">
@@ -87,6 +146,9 @@
     </table>
     <div class="empty" id="emptyState" style="display:none;">No appointments yet.</div>
   </div>
+
+  <!-- Mobile cards -->
+  <div class="cards-wrap" id="cardsWrap"></div>
 </div>
 
 <script>
@@ -110,6 +172,7 @@ async function loadAppointments() {
   document.getElementById('loading').style.display = 'block';
   document.getElementById('apptTable').style.display = 'none';
   document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('cardsWrap').innerHTML = '';
 
   try {
     const res = await fetch('/api/appointments');
@@ -123,24 +186,24 @@ async function loadAppointments() {
       return;
     }
 
-    // Latest submission
     const latest = new Date(data[0].createdAt);
     document.getElementById('statLatest').textContent =
       latest.toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
 
     const tbody = document.getElementById('apptBody');
     tbody.innerHTML = '';
+    const cardsWrap = document.getElementById('cardsWrap');
 
     data.forEach((a, i) => {
       const submitted = new Date(a.createdAt).toLocaleDateString('en-PH', {
         month: 'short', day: 'numeric', year: 'numeric'
       });
+
+      // Desktop row
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${i + 1}</td>
-        <td>
-          <div><strong>${a.firstName} ${a.lastName}</strong></div>
-        </td>
+        <td><strong>${a.firstName} ${a.lastName}</strong></td>
         <td>
           <div>${a.phone}</div>
           <div class="sub">${a.email}</div>
@@ -157,6 +220,47 @@ async function loadAppointments() {
         <td>${submitted}</td>
       `;
       tbody.appendChild(tr);
+
+      // Mobile card
+      const card = document.createElement('div');
+      card.className = 'appt-card';
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="card-name">${a.firstName} ${a.lastName}</div>
+          <div class="card-num">#${i + 1}</div>
+        </div>
+        <div class="card-row">
+          <div class="card-label">Phone</div>
+          <div class="card-val">${a.phone}</div>
+        </div>
+        <div class="card-row">
+          <div class="card-label">Email</div>
+          <div class="card-val">${a.email}</div>
+        </div>
+        <div class="card-row">
+          <div class="card-label">Address</div>
+          <div class="card-val">${a.address}</div>
+        </div>
+        <div class="card-row">
+          <div class="card-label">Project</div>
+          <div class="card-val">
+            ${serviceLabels[a.service] || a.service}
+            <div class="card-sub">${a.budget || '—'}</div>
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="card-label">Schedule</div>
+          <div class="card-val">
+            ${a.prefDate}
+            <div class="card-sub">${timeLabels[a.prefTime] || a.prefTime}</div>
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="card-label">Submitted</div>
+          <div class="card-val">${submitted}</div>
+        </div>
+      `;
+      cardsWrap.appendChild(card);
     });
 
     document.getElementById('apptTable').style.display = 'table';
