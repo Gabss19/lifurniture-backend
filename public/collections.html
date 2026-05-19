@@ -246,17 +246,232 @@
     </div>
   </footer>
 
+  <!-- ══════════════════════════════════════════════
+       PROJECT DETAIL MODAL
+  ══════════════════════════════════════════════ -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+      <div class="modal-inner">
+        <div class="modal-img-wrap">
+          <img id="modalImg" src="" alt="" />
+        </div>
+        <div class="modal-details">
+          <p class="modal-cat" id="modalCat"></p>
+          <h2 class="modal-title" id="modalTitle"></h2>
+          <div class="modal-meta" id="modalMeta"></div>
+          <p class="modal-desc" id="modalDesc"></p>
+          <a href="appointments.html" class="btn btn-primary" style="margin-top: 24px; display: inline-block;">
+            Book a Similar Project →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* ── Modal ── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(28, 16, 6, 0.82);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-box {
+      background: var(--parchment);
+      border-radius: 8px;
+      max-width: 880px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      transform: translateY(24px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-backdrop.open .modal-box {
+      transform: translateY(0) scale(1);
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: var(--walnut);
+      color: var(--cream);
+      border: none;
+      border-radius: 50%;
+      width: 36px; height: 36px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: var(--cedar); }
+    .modal-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .modal-img-wrap {
+      height: 420px;
+      overflow: hidden;
+    }
+    .modal-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .modal-details {
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .modal-cat {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--honey);
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 300;
+      color: var(--walnut);
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .modal-meta {
+      display: flex;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--mist);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .modal-meta span { color: var(--cedar); }
+    .modal-desc {
+      font-size: 0.88rem;
+      color: var(--cedar);
+      line-height: 1.8;
+      font-weight: 300;
+    }
+    @media (max-width: 640px) {
+      .modal-inner { grid-template-columns: 1fr; }
+      .modal-img-wrap { height: 240px; }
+      .modal-details { padding: 28px 24px; }
+    }
+  </style>
+
   <script>
     // ── Navbar ──
     const nav = document.getElementById('mainNav');
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 40);
-      if (window.scrollY <= 40) nav.classList.add('scrolled'); // always dark on this page
+      if (window.scrollY <= 40) nav.classList.add('scrolled');
     });
-
     document.getElementById('navToggle').addEventListener('click', () => {
       document.getElementById('navLinks').classList.toggle('open');
     });
+
+    // ── Project data for modal ──
+    const projectData = {
+      'gc-1': {
+        img: '33dd0f8a-387c-4479-ae5d-d6ad25624123.jpg',
+        cat: 'Cabinets · Kitchen',
+        title: 'Ceiling Kitchen Cabinet',
+        meta: ['Plywood', '·', 'Valenzuela, 2024'],
+        desc: 'A full ceiling-height kitchen cabinet built to maximize vertical storage space. Designed with clean lines and smooth push-open doors. Custom-fitted to the client\'s kitchen layout in Valenzuela — from floor measurement to final installation.'
+      },
+      'gc-2': {
+        img: '70354f5c-8db7-4c45-8dd9-b9d88ff8075f.jpg',
+        cat: 'Drawers · Bedroom',
+        title: '6-Drawer Bedroom Chest',
+        meta: ['Plywood', '·', 'Malabon, 2024'],
+        desc: 'A 6-drawer chest unit crafted for a bedroom in Malabon. Built with smooth full-extension drawer slides and a clean, minimal fascia. Each drawer is sized for optimal clothing storage — no wasted space.'
+      },
+      'gc-3': {
+        img: '5c4aa26d-959f-45e6-8246-509e73e20f30.jpg',
+        cat: 'Built-in Storage · Living Room',
+        title: 'Wall-to-Wall Storage Unit',
+        meta: ['Plywood + Veneer', '·', 'Caloocan, 2023'],
+        desc: 'A custom wall-to-wall built-in storage unit for a living room in Caloocan. Combines open shelving with closed cabinet sections, finished with a wood veneer surface. Designed to serve as both storage and a display feature wall.'
+      },
+      'gc-4': {
+        img: 'ec2652f1-b796-443e-ad25-e1d173b7f772.jpg',
+        cat: 'Cabinets · Bedroom',
+        title: 'Mirror Cabinet',
+        meta: ['Melamine Board', '·', 'Quezon City, 2024'],
+        desc: 'A bedroom mirror cabinet built with melamine board for a clean, modern finish. Integrates full-length mirror panels with internal shelving and hanging space. Delivered and installed in Quezon City.'
+      },
+      'gc-5': {
+        img: '2547a7b6-df1c-4cab-927e-950313666a46.jpg',
+        cat: 'Storage · Kitchen',
+        title: 'Under-Sink & Overhead Cabinet Set',
+        meta: ['Marine Plywood', '·', 'Valenzuela, 2023'],
+        desc: 'A kitchen cabinet set featuring both under-sink and overhead units. Built with marine plywood for moisture resistance — ideal for kitchen environments. Includes adjustable shelves and soft-close hinges throughout.'
+      },
+      'gc-6': {
+        img: '20260515_171617.jpg',
+        cat: 'Drawers · Study Room',
+        title: 'Study Desk with Built-in Drawers',
+        meta: ['Plywood + MDF', '·', 'Navotas, 2024'],
+        desc: 'A study desk built with integrated drawer units on both sides for a study room in Navotas. The desktop surface is wide enough for dual monitors. Built-in cable management channels keep the workspace clean and organized.'
+      }
+    };
+
+    // ── Modal logic ──
+    const backdrop = document.getElementById('modalBackdrop');
+    const modalClose = document.getElementById('modalClose');
+
+    function openModal(cardClass) {
+      const data = projectData[cardClass];
+      if (!data) return;
+
+      document.getElementById('modalImg').src = data.img;
+      document.getElementById('modalImg').alt = data.title;
+      document.getElementById('modalCat').textContent = data.cat;
+      document.getElementById('modalTitle').textContent = data.title;
+      document.getElementById('modalMeta').innerHTML = data.meta.map(m => `<span>${m}</span>`).join('');
+      document.getElementById('modalDesc').textContent = data.desc;
+
+      backdrop.classList.add('open');
+      backdrop.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      backdrop.classList.remove('open');
+      backdrop.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    // Attach click to each gallery card's view button
+    document.querySelectorAll('.gallery-card').forEach(card => {
+      const gcClass = [...card.classList].find(c => c.startsWith('gc-'));
+      card.querySelector('.view-btn').addEventListener('click', () => openModal(gcClass));
+      // Also make the whole overlay clickable
+      card.querySelector('.gallery-overlay').addEventListener('click', () => openModal(gcClass));
+    });
+
+    modalClose.addEventListener('click', closeModal);
+    backdrop.addEventListener('click', e => { if (e.target === backdrop) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
     // ── Filter logic ──
     const filterBtns = document.querySelectorAll('.filter-btn');
@@ -267,22 +482,19 @@
 
     filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        // Update active button
         filterBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
         const filter = btn.dataset.filter;
         let visible = 0;
 
-        cards.forEach((card, i) => {
+        cards.forEach(card => {
           const cats = card.dataset.category;
           const show = filter === 'all' || cats.includes(filter);
-
           if (show) {
             card.style.display = '';
-            card.style.animationDelay = (visible * 0.06) + 's';
             card.style.animation = 'none';
-            void card.offsetWidth; // reflow
+            void card.offsetWidth;
             card.style.animation = '';
             visible++;
           } else {
