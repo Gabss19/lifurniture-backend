@@ -30,6 +30,16 @@ const appointmentSchema = new mongoose.Schema({
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);
 
+// POST - Verify admin password securely on the server
+app.post('/api/admin/login', (req, res) => {
+  const { password } = req.body;
+  if (password === process.env.ADMIN_PASSWORD) {
+    res.json({ success: true, message: 'Authenticated' });
+  } else {
+    res.status(401).json({ success: false, message: 'Invalid password' });
+  }
+});
+
 // POST - Save appointment
 app.post('/api/appointments', async (req, res) => {
   try {
@@ -46,6 +56,19 @@ app.get('/api/appointments', async (req, res) => {
   try {
     const appointments = await Appointment.find().sort({ createdAt: -1 });
     res.json(appointments);
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// NEW: DELETE - Delete a single appointment from MongoDB Atlas by ID
+app.delete('/api/appointments/:id', async (req, res) => {
+  try {
+    const deletedAppt = await Appointment.findByIdAndDelete(req.params.id);
+    if (!deletedAppt) {
+      return res.status(404).json({ success: false, message: 'Appointment not found' });
+    }
+    res.json({ success: true, message: 'Appointment deleted successfully!' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
