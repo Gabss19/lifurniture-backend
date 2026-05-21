@@ -40,16 +40,39 @@ app.post('/api/admin/login', (req, res) => {
   }
 });
 
-// POST - Save appointment
+// POST - Save appointment (With Spam Filter & Missing Field Validation)
 app.post('/api/appointments', async (req, res) => {
   try {
+    // 1. Honeypot check: If this hidden field has data, reject it immediately
+    if (req.body.honeyField && req.body.honeyField.trim() !== '') {
+      console.log('🤖 Bot submission blocked!');
+      return res.status(400).json({ success: false, message: 'Spam validation failed.' });
+    }
+
+    // 2. Destructure inputs to validate them
+    const { firstName, lastName, phone, email, address, service, prefDate, prefTime } = req.body;
+
+    // 3. Strict Server-Side Validation: Ensure no required fields are blank
+    if (!firstName || !lastName || !phone || !email || !address || !service || !prefDate || !prefTime) {
+      return res.status(400).json({ success: false, message: 'Missing required information. All fields except budget and notes are mandatory.' });
+    }
+
+    // 4. Basic Email Format Validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ success: false, message: 'Please enter a valid email address.' });
+    }
+
+    // 5. Save to MongoDB Atlas if everything is valid
     const appointment = new Appointment(req.body);
     await appointment.save();
     res.json({ success: true, message: 'Appointment saved!' });
+    
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
+
 
 // GET - Get all appointments (for admin)
 app.get('/api/appointments', async (req, res) => {
