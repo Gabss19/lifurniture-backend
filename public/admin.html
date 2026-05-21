@@ -168,6 +168,22 @@ const timeLabels = {
   afternoon: 'Afternoon (1PM–5PM)'
 };
 
+async function deleteAppointment(id) {
+  if (!confirm("Are you sure you want to delete this appointment?")) return;
+  
+  try {
+    const res = await fetch(`/api/appointments/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      alert("Deleted successfully!");
+      loadAppointments(); // Reloads the list automatically
+    } else {
+      alert("Failed to delete. Make sure your Express backend has a DELETE route.");
+    }
+  } catch (err) {
+    alert("Error connecting to server.");
+  }
+}
+
 async function loadAppointments() {
   document.getElementById('loading').style.display = 'block';
   document.getElementById('apptTable').style.display = 'none';
@@ -181,25 +197,39 @@ async function loadAppointments() {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('statTotal').textContent = data.length;
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       document.getElementById('emptyState').style.display = 'block';
+      document.getElementById('statLatest').textContent = '—';
       return;
     }
 
-    const latest = new Date(data[0].createdAt);
-    document.getElementById('statLatest').textContent =
-      latest.toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
+    // FIXED: Added a safety check just in case createdAt doesn't exist
+    if (data[0] && data[0].createdAt) {
+      const latest = new Date(data[0].createdAt);
+      document.getElementById('statLatest').textContent =
+        latest.toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
+    } else {
+      document.getElementById('statLatest').textContent = 'Unknown';
+    }
 
     const tbody = document.getElementById('apptBody');
     tbody.innerHTML = '';
     const cardsWrap = document.getElementById('cardsWrap');
 
-    data.forEach((a, i) => {
-      const submitted = new Date(a.createdAt).toLocaleDateString('en-PH', {
-        month: 'short', day: 'numeric', year: 'numeric'
-      });
+    // Update table header to include Actions if not already there
+    const hasActionHeader = document.querySelector('thead tr th:last-child').textContent === 'Action';
+    if (!hasActionHeader) {
+      const th = document.createElement('th');
+      th.textContent = 'Action';
+      document.querySelector('thead tr').appendChild(th);
+    }
 
-      // Desktop row
+    data.forEach((a, i) => {
+      const submitted = a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-PH', {
+        month: 'short', day: 'numeric', year: 'numeric'
+      }) : '—';
+
+      // Desktop row (Added Delete Button)
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${i + 1}</td>
@@ -218,10 +248,11 @@ async function loadAppointments() {
           <div class="sub">${timeLabels[a.prefTime] || a.prefTime}</div>
         </td>
         <td>${submitted}</td>
+        <td><button style="color:red; cursor:pointer;" onclick="deleteAppointment('${a._id}')">🗑 Delete</button></td>
       `;
       tbody.appendChild(tr);
 
-      // Mobile card
+      // Mobile card (Added Delete Button)
       const card = document.createElement('div');
       card.className = 'appt-card';
       card.innerHTML = `
@@ -259,6 +290,9 @@ async function loadAppointments() {
           <div class="card-label">Submitted</div>
           <div class="card-val">${submitted}</div>
         </div>
+        <div style="text-align:right; padding-top:10px;">
+          <button style="color:red; cursor:pointer;" onclick="deleteAppointment('${a._id}')">🗑 Delete Item</button>
+        </div>
       `;
       cardsWrap.appendChild(card);
     });
@@ -271,5 +305,6 @@ async function loadAppointments() {
 
 loadAppointments();
 </script>
+
 </body>
 </html>
