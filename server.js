@@ -32,16 +32,19 @@ const appointmentSchema = new mongoose.Schema({
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);
 
-// Helper function to create the email engine cleanly
+// Helper function to create the email engine cleanly (Updated for Render's firewall)
 function createEmailTransporter() {
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: '://gmail.com',
+    port: 465,
+    secure: true, // Use SSL/TLS for port 465
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS
     }
   });
 }
+
 
 // POST - Verify admin password securely on the server
 app.post('/api/admin/login', (req, res) => {
