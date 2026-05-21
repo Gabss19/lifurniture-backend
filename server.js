@@ -109,6 +109,22 @@ app.get('/api/appointments', async (req, res) => {
   }
 });
 
+// NEW: GET - Fetch just a list of booked dates to disable them on the calendar
+app.get('/api/appointments/booked-dates', async (req, res) => {
+  try {
+    // Finds all appointments and only pulls the 'prefDate' field
+    const appointments = await Appointment.find({}, 'prefDate');
+    
+    // Extracts the dates into a clean list like ["2026-05-25", "2026-05-28"]
+    const bookedDates = appointments.map(appt => appt.prefDate).filter(Boolean);
+    
+    res.json(bookedDates); 
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+
 // NEW: DELETE - Delete a single appointment from MongoDB Atlas by ID
 app.delete('/api/appointments/:id', async (req, res) => {
   try {
