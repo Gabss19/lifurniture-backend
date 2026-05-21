@@ -197,9 +197,6 @@ async function updateStatus(id, newStatus, selectElement) {
 
     if (res.ok) {
       updateSelectColor(selectElement, newStatus);
-      if (newStatus === 'Confirmed') {
-        alert("Status confirmed! Notification email dispatched to client.");
-      }
     } else {
       alert("Failed to save updated status.");
     }
@@ -212,6 +209,7 @@ async function updateStatus(id, newStatus, selectElement) {
 
 // NEW 🔥 Helper to give the dropdown menus professional colored backgrounds
 function updateSelectColor(el, status) {
+  if (!el) return;
   if (status === 'Pending') { el.style.background = '#fff3cd'; el.style.color = '#856404'; el.style.borderColor = '#ffeeba'; }
   else if (status === 'Confirmed') { el.style.background = '#d4edda'; el.style.color = '#155724'; el.style.borderColor = '#c3e6cb'; }
   else if (status === 'Completed') { el.style.background = '#e2e3e5'; el.style.color = '#383d41'; el.style.borderColor = '#d6d8db'; }
@@ -264,9 +262,9 @@ async function loadAppointments() {
     tbody.innerHTML = '';
     const cardsWrap = document.getElementById('cardsWrap');
 
-    // NEW: Automatically map Status and Action headers to layout row if missing
-    const hasStatusHeader = Array.from(document.querySelectorAll('thead tr th')).some(th => th.textContent === 'Status');
-    if (!hasStatusHeader) {
+    // Automatically map Status and Action headers to layout row if missing
+    const tableHeaders = document.querySelectorAll('thead tr th');
+    if (tableHeaders.length === 7) {
       const headerRow = document.querySelector('thead tr');
       headerRow.innerHTML = `
         <th>#</th>
@@ -290,7 +288,7 @@ async function loadAppointments() {
 
       // Dropdown selector configuration template
       const statusSelectHTML = `
-        <select onchange="updateStatus('${a._id}', this.value, this)" style="padding: 4px 8px; border-radius: 4px; font-weight:bold; font-size:0.85rem; cursor:pointer;">
+        <select onchange="updateStatus('${a._id}', this.value, this)" style="padding: 4px 8px; border-radius: 4px; font-weight:bold; font-size:0.85rem; cursor:pointer; border:1px solid;">
           <option value="Pending" ${currentStatus === 'Pending' ? 'selected' : ''}>⏳ Pending</option>
           <option value="Confirmed" ${currentStatus === 'Confirmed' ? 'selected' : ''}>✅ Confirmed</option>
           <option value="Completed" ${currentStatus === 'Completed' ? 'selected' : ''}>💼 Completed</option>
@@ -360,7 +358,9 @@ async function loadAppointments() {
   }
 }
 
+// Trigger secure authentication validation sequence on load
 checkAdminAccess();
 </script>
+
 </body>
 </html>
