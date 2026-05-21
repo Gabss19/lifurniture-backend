@@ -6,6 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book an Appointment – LiFurniture</title>
   <link rel="stylesheet" href="style.css" />
+  
+  <link rel="stylesheet" href="https://jsdelivr.net">
+  <script src="https://jsdelivr.net"></script>
+
   <style>
     /* ── Appointments page-specific styles ── */
 
@@ -678,11 +682,34 @@
       document.getElementById('navLinks').classList.toggle('open');
     });
 
-    // ── Set min date to today ──
-    const dateInput = document.getElementById('prefDate');
-    dateInput.min = new Date().toISOString().split('T')[0];
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.setAttribute('min', today);
+// ── NEW: Set up Monthly Availability Calendar (Flatpickr) ──
+async function initCalendar() {
+  let bookedDates = [];
+  
+  try {
+    // 1. Fetch your booked days from MongoDB Atlas
+    const res = await fetch('/api/appointments/booked-dates');
+    if (res.ok) {
+      bookedDates = await res.json();
+    }
+  } catch (err) {
+    console.error("Could not fetch calendar bookings from server:", err);
+  }
+
+  // 2. Initialize the monthly calendar on your input element
+  flatpickr("#prefDate", {
+    minDate: "today",           // Blocks out past dates completely
+    dateFormat: "Y-m-d",        // Matches your standard YYYY-MM-DD format
+    disable: bookedDates,       // Disables and grays out all occupied dates
+    locale: {
+      firstDayOfWeek: 1         // Calender layout starts on a Monday
+        }
+    });
+  }
+
+
+  initCalendar();
+
 
     // ── Form submission — POST to backend ──
     document.getElementById('apptForm').addEventListener('submit', async function (e) {
