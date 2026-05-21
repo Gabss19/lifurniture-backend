@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const app = express();
@@ -13,7 +14,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected!'))
   .catch(err => console.log('DB Error:', err));
 
-// Appointment Schema
+// Appointment Schema (Updated to include status tracking)
 const appointmentSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
@@ -25,10 +26,22 @@ const appointmentSchema = new mongoose.Schema({
   prefDate: String,
   prefTime: String,
   notes: String,
+  status: { type: String, default: 'Pending' },
   createdAt: { type: Date, default: Date.now }
 });
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);
+
+// Helper function to create the email engine cleanly
+function createEmailTransporter() {
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+}
 
 // POST - Verify admin password securely on the server
 app.post('/api/admin/login', (req, res) => {
@@ -40,7 +53,7 @@ app.post('/api/admin/login', (req, res) => {
   }
 });
 
-// POST - Save appointment (With 1-Visit-Per-Day Limit & Spam Filters)
+// POST - Save appointment (With Spam Filters, Day Lock, & Automated Email Notification)
 app.post('/api/appointments', async (req, res) => {
   try {
     // 1. Honeypot check
@@ -63,9 +76,8 @@ app.post('/api/appointments', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Please enter a valid email address.' });
     }
 
-    // UPDATED 🎯 5. Lock down the ENTIRE DAY regardless of morning or afternoon selection
+    // 5. Lock down the ENTIRE DAY regardless of morning or afternoon selection
     const dayIsOccupied = await Appointment.findOne({ prefDate: prefDate });
-
     if (dayIsOccupied) {
       return res.status(400).json({ 
         success: false, 
@@ -79,7 +91,6 @@ app.post('/api/appointments', async (req, res) => {
       lastName: lastName,
       prefDate: prefDate
     });
-
     if (duplicateCustomer) {
       return res.status(400).json({ 
         success: false, 
@@ -90,14 +101,44 @@ app.post('/api/appointments', async (req, res) => {
     // 7. Save to MongoDB Atlas if the day is completely free
     const appointment = new Appointment(req.body);
     await appointment.save();
+
+    // 8. Trigger Automated Confirmation Email Engine in the background
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      const transporter = createEmailTransporter();
+      const mailOptions = {
+        from: `"LiFurniture Notifications" <${process.env.EMAIL_USER}>`,
+        to: [email, process.env.EMAIL_USER], // Notifies both client and your store
+        subject: `LiFurniture Site Visit Request Received - ${firstName} ${lastName}`,
+        html: `
+          <h3>Hello ${firstName},</h3>
+          <p>Thank you for reaching out to LiFurniture! We have successfully received your request for a free site visit.</p>
+          <hr>
+          <h4>Appointment Details:</h4>
+          <ul>
+            <li><strong>Project Type:</strong> ${service}</li>
+            <li><strong>Preferred Date:</strong> ${prefDate}</li>
+            <li><strong>Preferred Time:</strong> ${prefTime}</li>
+            <li><strong>Address:</strong> ${address}</li>
+          </ul>
+          <hr>
+          <p>Our admin team is currently reviewing your schedule. We will update your appointment status and confirm with you shortly.</p>
+          <br>
+          <p>Best regards,<br><strong>LiFurniture Team</strong></p>
+        `
+      };
+
+      transporter.sendMail(mailOptions, (error) => {
+        if (error) console.error('Email delivery error:', error);
+        else console.log('Confirmation emails delivered successfully!');
+      });
+    }
+
     res.json({ success: true, message: 'Appointment saved!' });
     
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
-
-
 
 // GET - Get all appointments (for admin)
 app.get('/api/appointments', async (req, res) => {
@@ -109,23 +150,52 @@ app.get('/api/appointments', async (req, res) => {
   }
 });
 
-// NEW: GET - Fetch just a list of booked dates to disable them on the calendar
+// GET - Fetch just a list of booked dates to disable them on the calendar
 app.get('/api/appointments/booked-dates', async (req, res) => {
   try {
-    // Finds all appointments and only pulls the 'prefDate' field
     const appointments = await Appointment.find({}, 'prefDate');
-    
-    // Extracts the dates into a clean list like ["2026-05-25", "2026-05-28"]
     const bookedDates = appointments.map(appt => appt.prefDate).filter(Boolean);
-    
     res.json(bookedDates); 
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
+// PUT - Update appointment status from admin dashboard + send notification
+app.put('/api/appointments/:id/status', async (req, res) => {
+  try {
+    const { status } = req.body;
+    const updatedAppt = await Appointment.findByIdAndUpdate(req.params.id, { status }, { new: true });
 
-// NEW: DELETE - Delete a single appointment from MongoDB Atlas by ID
+    if (!updatedAppt) {
+      return res.status(404).json({ success: false, message: 'Appointment not found' });
+    }
+
+    // Automatically send an update alert to the customer if status shifts to Confirmed
+    if (status === 'Confirmed' && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      const transporter = createEmailTransporter();
+      const updateMail = {
+        from: `"LiFurniture Notifications" <${process.env.EMAIL_USER}>`,
+        to: updatedAppt.email,
+        subject: `Appointment Confirmed! - LiFurniture`,
+        html: `
+          <h3>Hi ${updatedAppt.firstName},</h3>
+          <p>Good news! Your physical site inspection appointment scheduled for <strong>${updatedAppt.prefDate}</strong> has been officially <strong>CONFIRMED</strong> by the LiFurniture team.</p>
+          <p>Our craftsmen will arrive during your preferred time window. If you need to rearrange your details, please reach out to us directly via our contact number.</p>
+          <br>
+          <p>See you soon,<br><strong>LiFurniture Team</strong></p>
+        `
+      };
+      transporter.sendMail(updateMail);
+    }
+
+    res.json({ success: true, message: 'Status updated!' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE - Delete a single appointment from MongoDB Atlas by ID
 app.delete('/api/appointments/:id', async (req, res) => {
   try {
     const deletedAppt = await Appointment.findByIdAndDelete(req.params.id);
