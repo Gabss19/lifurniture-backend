@@ -40,21 +40,21 @@ app.post('/api/admin/login', (req, res) => {
   }
 });
 
-// POST - Save appointment (With Spam Filter & Missing Field Validation)
+// POST - Save appointment (With 1-Visit-Per-Day Limit & Spam Filters)
 app.post('/api/appointments', async (req, res) => {
   try {
-    // 1. Honeypot check: If this hidden field has data, reject it immediately
+    // 1. Honeypot check
     if (req.body.honeyField && req.body.honeyField.trim() !== '') {
       console.log('🤖 Bot submission blocked!');
       return res.status(400).json({ success: false, message: 'Spam validation failed.' });
     }
 
-    // 2. Destructure inputs to validate them
+    // 2. Destructure inputs
     const { firstName, lastName, phone, email, address, service, prefDate, prefTime } = req.body;
 
-    // 3. Strict Server-Side Validation: Ensure no required fields are blank
+    // 3. Strict Server-Side Validation
     if (!firstName || !lastName || !phone || !email || !address || !service || !prefDate || !prefTime) {
-      return res.status(400).json({ success: false, message: 'Missing required information. All fields except budget and notes are mandatory.' });
+      return res.status(400).json({ success: false, message: 'Missing required information.' });
     }
 
     // 4. Basic Email Format Validation
@@ -63,7 +63,31 @@ app.post('/api/appointments', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Please enter a valid email address.' });
     }
 
-    // 5. Save to MongoDB Atlas if everything is valid
+    // UPDATED 🎯 5. Lock down the ENTIRE DAY regardless of morning or afternoon selection
+    const dayIsOccupied = await Appointment.findOne({ prefDate: prefDate });
+
+    if (dayIsOccupied) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'This date is already fully booked for a site visit. Please select a different day.' 
+      });
+    }
+
+    // 6. Check if the exact same customer just submitted an identical form
+    const duplicateCustomer = await Appointment.findOne({
+      firstName: firstName,
+      lastName: lastName,
+      prefDate: prefDate
+    });
+
+    if (duplicateCustomer) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'You have already requested a site visit for this day!' 
+      });
+    }
+
+    // 7. Save to MongoDB Atlas if the day is completely free
     const appointment = new Appointment(req.body);
     await appointment.save();
     res.json({ success: true, message: 'Appointment saved!' });
@@ -72,6 +96,7 @@ app.post('/api/appointments', async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 });
+
 
 
 // GET - Get all appointments (for admin)
