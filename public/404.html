@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Not Found – LiFurniture</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .not-found {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px;
+      background: var(--parchment);
+    }
+
+    .nf-num {
+      font-family: var(--font-display);
+      font-size: clamp(6rem, 20vw, 12rem);
+      font-weight: 200;
+      color: var(--honey);
+      line-height: 1;
+      margin-bottom: 8px;
+      opacity: 0.35;
+      letter-spacing: -0.02em;
+    }
+
+    .nf-icon {
+      font-size: 3rem;
+      margin-bottom: 24px;
+    }
+
+    .nf-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 300;
+      color: var(--walnut);
+      margin-bottom: 16px;
+    }
+
+    .nf-title em {
+      color: var(--cedar);
+      font-style: italic;
+    }
+
+    .nf-sub {
+      font-size: 0.9rem;
+      color: var(--cedar);
+      font-weight: 300;
+      line-height: 1.7;
+      max-width: 420px;
+      margin-bottom: 48px;
+    }
+
+    .nf-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nf-links {
+      margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(44,26,14,0.1);
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nf-links a {
+      font-size: 0.82rem;
+      color: var(--cedar);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+
+    .nf-links a:hover { color: var(--honey); }
+  </style>
+</head>
+<body>
+
+  <nav class="nav scrolled" id="mainNav">
+    <a href="index.html" class="nav-logo">
+      <span class="wordmark">LiFurniture</span>
+      <span class="tagline">Made-to-Order · Est. 2015</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="collections.html">Collections</a></li>
+      <li><a href="appointments.html">Appointments</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="appointments.html" class="nav-cta">Book a Visit</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="not-found">
+    <div class="nf-num">404</div>
+    <div class="nf-icon">🪑</div>
+    <h1 class="nf-title">This Page <em>Doesn't Exist</em></h1>
+    <p class="nf-sub">
+      Looks like this page was moved, renamed, or never built to begin with —
+      kind of like furniture without measurements.
+    </p>
+    <div class="nf-actions">
+      <a href="index.html" class="btn btn-primary">← Back to Home</a>
+      <a href="appointments.html" class="btn btn-outline">Book a Visit</a>
+    </div>
+    <div class="nf-links">
+      <a href="collections.html">Collections</a>
+      <a href="appointments.html">Appointments</a>
+      <a href="about.html">About Us</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-bottom" style="justify-content:center;">
+      <span>© 2025 LiFurniture. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
