@@ -291,22 +291,6 @@ document.getElementById('statTotal').textContent = json.total;
     tbody.innerHTML = '';
     const cardsWrap = document.getElementById('cardsWrap');
 
-    const tableHeaders = document.querySelectorAll('thead tr th');
-    if (tableHeaders.length === 7) {
-      const headerRow = document.querySelector('thead tr');
-      headerRow.innerHTML = `
-        <th>#</th>
-        <th>Name</th>
-        <th>Contact</th>
-        <th>Address</th>
-        <th>Project</th>
-        <th>Schedule</th>
-        <th>Submitted</th>
-        <th>Status</th>
-        <th>Action</th>
-      `;
-    }
-
     data.forEach((a, i) => {
       const submitted = a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-PH', {
         month: 'short', day: 'numeric', year: 'numeric'
