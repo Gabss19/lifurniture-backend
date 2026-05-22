@@ -256,20 +256,21 @@ async function loadAppointments() {
   document.getElementById('cardsWrap').innerHTML = '';
 
   try {
-    const res = await fetch('/api/appointments', {
-      headers: { 'x-admin-token': sessionStorage.getItem('li_admin_auth_token') }
-    });
+   const res = await fetch('/api/appointments', {
+  headers: { 'x-admin-token': sessionStorage.getItem('li_admin_auth_token') }
+});
 
-    if (!res.ok) {
-      document.getElementById('loading').textContent = `❌ Server returned ${res.status}. Check your backend.`;
-      return;
-    }
+if (!res.ok) {
+  document.getElementById('loading').textContent = `❌ Server returned ${res.status}. Check your backend.`;
+  return;
+}
 
-    const data = await res.json();
+const json = await res.json();
+const data = json.appointments;
 
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('statTotal').textContent = data.length;
-
+document.getElementById('loading').style.display = 'none';
+document.getElementById('statTotal').textContent = json.total;
+   
     if (!data || data.length === 0) {
       document.getElementById('emptyState').style.display = 'block';
       document.getElementById('statLatest').textContent = '—';
