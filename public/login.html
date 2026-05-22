@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login – LiFurniture</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #FAF7F2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .login-wrap {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-brand {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .login-brand .wordmark {
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: #2C1A0E;
+      letter-spacing: 0.05em;
+    }
+
+    .login-brand .wordmark span {
+      color: #D4894A;
+      font-style: italic;
+    }
+
+    .login-brand .sub {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #A89880;
+      margin-top: 6px;
+    }
+
+    .login-card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px 36px;
+      border: 1px solid rgba(44,26,14,0.08);
+      box-shadow: 0 8px 40px rgba(44,26,14,0.06);
+    }
+
+    .login-card h2 {
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: #2C1A0E;
+      margin-bottom: 8px;
+    }
+
+    .login-card .hint {
+      font-size: 0.78rem;
+      color: #A89880;
+      margin-bottom: 32px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #7A5C3E;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 48px 12px 16px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: #2C1A0E;
+      background: #FAF7F2;
+      border: 1px solid rgba(44,26,14,0.15);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: #D4894A;
+      box-shadow: 0 0 0 3px rgba(212,137,74,0.12);
+    }
+
+    .toggle-pw {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #A89880;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: #2C1A0E;
+      color: #F5EFE6;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+
+    .login-btn:hover:not(:disabled) { background: #B5651D; }
+    .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .error-msg {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #fff0f0;
+      border: 1px solid rgba(200,60,60,0.2);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: #c0392b;
+      text-align: center;
+    }
+
+    .error-msg.show { display: block; }
+
+    .attempts-bar {
+      margin-top: 16px;
+      font-size: 0.72rem;
+      text-align: center;
+      color: #A89880;
+    }
+
+    .attempts-bar .dots {
+      display: inline-flex;
+      gap: 5px;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+
+    .attempts-bar .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #e0d8d0;
+      transition: background 0.2s;
+    }
+
+    .attempts-bar .dot.used { background: #e07b4a; }
+
+    @media (max-width: 440px) {
+      .login-card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-wrap">
+  <div class="login-brand">
+    <div class="wordmark">Li<span>Furniture</span></div>
+    <div class="sub">Admin Portal</div>
+  </div>
+
+  <div class="login-card">
+    <h2>Welcome back</h2>
+    <p class="hint">Enter your admin password to access the dashboard.</p>
+
+    <div class="form-group">
+      <label for="password">Admin Password</label>
+      <div class="input-wrap">
+        <input type="password" id="password" placeholder="••••••••••" autocomplete="current-password" />
+        <button class="toggle-pw" type="button" id="togglePw" aria-label="Show password">👁</button>
+      </div>
+    </div>
+
+    <button class="login-btn" id="loginBtn">Sign In →</button>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <div class="attempts-bar" id="attemptsBar" style="display:none;">
+      Failed attempts &nbsp;
+      <span class="dots" id="attemptDots">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // If already authed this session, skip straight to admin
+  if (sessionStorage.getItem('li_admin_auth') === 'true') {
+    window.location.replace('admin.html');
+  }
+
+  let failedAttempts = 0;
+  const MAX_CLIENT_ATTEMPTS = 5;
+
+  const passwordInput = document.getElementById('password');
+  const loginBtn      = document.getElementById('loginBtn');
+  const errorMsg      = document.getElementById('errorMsg');
+  const togglePw      = document.getElementById('togglePw');
+  const attemptsBar   = document.getElementById('attemptsBar');
+  const attemptDots   = document.getElementById('attemptDots').querySelectorAll('.dot');
+
+  // Toggle password visibility
+  togglePw.addEventListener('click', () => {
+    const isText = passwordInput.type === 'text';
+    passwordInput.type = isText ? 'password' : 'text';
+    togglePw.textContent = isText ? '👁' : '🙈';
+  });
+
+  // Allow Enter key to submit
+  passwordInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleLogin();
+  });
+
+  loginBtn.addEventListener('click', handleLogin);
+
+  function updateDots() {
+    attemptDots.forEach((dot, i) => {
+      dot.classList.toggle('used', i < failedAttempts);
+    });
+    if (failedAttempts > 0) attemptsBar.style.display = 'block';
+  }
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.classList.add('show');
+    passwordInput.style.borderColor = 'rgba(200,60,60,0.5)';
+    passwordInput.focus();
+    passwordInput.select();
+  }
+
+  function clearError() {
+    errorMsg.classList.remove('show');
+    passwordInput.style.borderColor = '';
+  }
+
+  async function handleLogin() {
+    const pwd = passwordInput.value.trim();
+    clearError();
+
+    if (!pwd) {
+      showError('Please enter a password.');
+      return;
+    }
+
+    loginBtn.textContent = 'Signing in…';
+    loginBtn.disabled = true;
+
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pwd })
+      });
+
+      const data = await res.json();
+
+      if (res.status === 429) {
+        showError(data.message || 'Too many attempts. Please wait before trying again.');
+        loginBtn.textContent = 'Sign In →';
+        loginBtn.disabled = false;
+        return;
+      }
+
+      if (res.ok && data.success) {
+        sessionStorage.setItem('li_admin_auth', 'true');
+        sessionStorage.setItem('li_admin_auth_token', pwd);
+        loginBtn.textContent = '✓ Redirecting…';
+        window.location.replace('admin.html');
+        return;
+      }
+
+      // Wrong password
+      failedAttempts++;
+      updateDots();
+      showError(
+        failedAttempts >= MAX_CLIENT_ATTEMPTS
+          ? 'Too many failed attempts. You may be locked out soon.'
+          : `Incorrect password. ${MAX_CLIENT_ATTEMPTS - failedAttempts} attempt(s) remaining.`
+      );
+
+    } catch (err) {
+      showError('Could not connect to server. Check if the backend is running.\n\n' + err.message);
+    }
+
+    loginBtn.textContent = 'Sign In →';
+    loginBtn.disabled = false;
+    passwordInput.value = '';
+  }
+</script>
+
+</body>
+</html>
