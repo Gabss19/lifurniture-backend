@@ -198,6 +198,12 @@ async function updateStatus(id, newStatus, selectElement) {
   }
 }
 
+ function logout() {
+  sessionStorage.removeItem('li_admin_auth');
+  sessionStorage.removeItem('li_admin_auth_token');
+  window.location.replace('login.html');
+}
+
 function updateSelectColor(el, status) {
   if (!el) return;
   if (status === 'Pending')        { el.style.background = '#fff3cd'; el.style.color = '#856404'; el.style.borderColor = '#ffeeba'; }
