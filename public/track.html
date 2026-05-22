@@ -308,9 +308,6 @@
     const statusNote  = document.getElementById('statusNote');
     const tryAgain    = document.getElementById('tryAgain');
 
-    // Set min date to today
-    document.getElementById('trackDate').min = new Date().toISOString().split('T')[0];
-
     trackBtn.addEventListener('click', handleTrack);
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') handleTrack();
