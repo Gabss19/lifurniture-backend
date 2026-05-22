@@ -51,7 +51,7 @@ function createEmailTransporter() {
 app.post('/api/admin/login', (req, res) => {
   const { password } = req.body;
   if (password === process.env.ADMIN_PASSWORD) {
-    res.json({ success: true, message: 'Authenticated' });
+    res.json({ success: true, token: 'li-admin-auth' });
   } else {
     res.status(401).json({ success: false, message: 'Invalid password' });
   }
