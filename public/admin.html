@@ -153,6 +153,7 @@
 
 <script>
 async function checkAdminAccess() {
+  // Skip prompt if already authenticated this session
   if (sessionStorage.getItem('li_admin_auth') === 'true') {
     loadAppointments();
     return;
@@ -177,7 +178,9 @@ async function checkAdminAccess() {
       return;
     }
 
+    // Save auth state and token for this browser session
     sessionStorage.setItem('li_admin_auth', 'true');
+    sessionStorage.setItem('li_admin_auth_token', pwd);
     loadAppointments();
 
   } catch (err) {
@@ -200,7 +203,10 @@ async function updateStatus(id, newStatus, selectElement) {
   try {
     const res = await fetch(`/api/appointments/${id}/status`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-admin-token': sessionStorage.getItem('li_admin_auth_token')
+      },
       body: JSON.stringify({ status: newStatus })
     });
 
@@ -228,7 +234,10 @@ async function deleteAppointment(id) {
   if (!confirm('Are you sure you want to delete this appointment?')) return;
 
   try {
-    const res = await fetch(`/api/appointments/${id}`, { method: 'DELETE' });
+    const res = await fetch(`/api/appointments/${id}`, { 
+      method: 'DELETE',
+      headers: { 'x-admin-token': sessionStorage.getItem('li_admin_auth_token') }
+    });
     if (res.ok) {
       alert('Deleted successfully!');
       loadAppointments();
@@ -247,7 +256,9 @@ async function loadAppointments() {
   document.getElementById('cardsWrap').innerHTML = '';
 
   try {
-    const res = await fetch('/api/appointments');
+    const res = await fetch('/api/appointments', {
+      headers: { 'x-admin-token': sessionStorage.getItem('li_admin_auth_token') }
+    });
 
     if (!res.ok) {
       document.getElementById('loading').textContent = `❌ Server returned ${res.status}. Check your backend.`;
