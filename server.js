@@ -158,7 +158,7 @@ app.post('/api/appointments', async (req, res) => {
 app.get('/api/appointments', requireAdminAuth, async (req, res) => {
   try {
     const appointments = await Appointment.find().sort({ createdAt: -1 });
-    res.json(appointments);
+    res.json({ appointments, total: appointments.length });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
