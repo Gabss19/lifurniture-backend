@@ -155,7 +155,7 @@
 </div>
 
 <script>
-// ── Bug #4 Fix: redirect to login.html instead of using prompt() ──
+
 async function checkAdminAccess() {
   if (sessionStorage.getItem('li_admin_auth') === 'true') {
     loadAppointments();
@@ -246,7 +246,6 @@ async function loadAppointments() {
       return;
     }
 
-    // ── Bug #1 Fix: server now returns { appointments, total } not a plain array ──
     const json = await res.json();
     const data = json.appointments;
 
@@ -270,8 +269,6 @@ async function loadAppointments() {
     const tbody = document.getElementById('apptBody');
     tbody.innerHTML = '';
     const cardsWrap = document.getElementById('cardsWrap');
-
-    // ── Bug #3 Fix: header is now hardcoded in HTML — no dynamic rewrite needed ──
 
     data.forEach((a, i) => {
       const submitted = a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-PH', {
