@@ -153,6 +153,11 @@
 
 <script>
 async function checkAdminAccess() {
+  if (sessionStorage.getItem('li_admin_auth') === 'true') {
+    loadAppointments();
+    return;
+  }
+
   const pwd = prompt('Enter admin password:');
 
   try {
@@ -172,6 +177,7 @@ async function checkAdminAccess() {
       return;
     }
 
+    sessionStorage.setItem('li_admin_auth', 'true');
     loadAppointments();
 
   } catch (err) {
