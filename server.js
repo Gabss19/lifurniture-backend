@@ -9,6 +9,16 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
+// Middleware to protect admin-only API routes
+function requireAdminAuth(req, res, next) {
+  const token = req.headers['x-admin-token'];
+  if (token === process.env.ADMIN_PASSWORD) {
+    next();
+  } else {
+    res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
+}
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected!'))
@@ -51,7 +61,7 @@ function createEmailTransporter() {
 app.post('/api/admin/login', (req, res) => {
   const { password } = req.body;
   if (password === process.env.ADMIN_PASSWORD) {
-    res.json({ success: true, token: 'li-admin-auth' });
+    res.json({ success: true, message: 'Authenticated' });
   } else {
     res.status(401).json({ success: false, message: 'Invalid password' });
   }
@@ -145,7 +155,7 @@ app.post('/api/appointments', async (req, res) => {
 });
 
 // GET - Get all appointments (for admin)
-app.get('/api/appointments', async (req, res) => {
+app.get('/api/appointments', requireAdminAuth, async (req, res) => {
   try {
     const appointments = await Appointment.find().sort({ createdAt: -1 });
     res.json(appointments);
@@ -166,7 +176,7 @@ app.get('/api/appointments/booked-dates', async (req, res) => {
 });
 
 // PUT - Update appointment status from admin dashboard + send notification
-app.put('/api/appointments/:id/status', async (req, res) => {
+app.put('/api/appointments/:id/status', requireAdminAuth, async (req, res) => {
   try {
     const { status } = req.body;
     const updatedAppt = await Appointment.findByIdAndUpdate(req.params.id, { status }, { new: true });
@@ -200,7 +210,7 @@ app.put('/api/appointments/:id/status', async (req, res) => {
 });
 
 // DELETE - Delete a single appointment from MongoDB Atlas by ID
-app.delete('/api/appointments/:id', async (req, res) => {
+app.delete('/api/appointments/:id', requireAdminAuth, async (req, res) => {
   try {
     const deletedAppt = await Appointment.findByIdAndDelete(req.params.id);
     if (!deletedAppt) {
