@@ -164,6 +164,26 @@ app.get('/api/appointments', requireAdminAuth, async (req, res) => {
   }
 });
 
+// GET - Single appointment lookup (for customer status tracking)
+app.get('/api/appointments/lookup', async (req, res) => {
+  try {
+    const { email, date } = req.query;
+    if (!email || !date) {
+      return res.status(400).json({ success: false, message: 'Email and date are required.' });
+    }
+    const appt = await Appointment.findOne(
+      { email: email, prefDate: date },
+      'firstName lastName service prefDate prefTime status createdAt'
+    );
+    if (!appt) {
+      return res.status(404).json({ success: false, message: 'No appointment found for that email and date.' });
+    }
+    res.json({ success: true, appointment: appt });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // GET - Fetch just a list of booked dates to disable them on the calendar
 app.get('/api/appointments/booked-dates', async (req, res) => {
   try {
