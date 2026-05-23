@@ -285,7 +285,6 @@ async function loadAppointments() {
         </td>
         <td>${submitted}</td>
         <td>${statusSelectHTML}</td>
-        <td><button style="color:red; cursor:pointer; background:none; border:none; text-decoration:underline;" onclick="deleteAppointment('${a._id}')">🗑 Delete</button></td>
       `;
       tbody.appendChild(tr);
       updateSelectColor(tr.querySelector('select'), currentStatus);
