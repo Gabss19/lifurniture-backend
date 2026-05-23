@@ -211,25 +211,6 @@ function updateSelectColor(el, status) {
   else if (status === 'Completed') { el.style.background = '#e2e3e5'; el.style.color = '#383d41'; el.style.borderColor = '#d6d8db'; }
 }
 
-async function deleteAppointment(id) {
-  if (!confirm('Are you sure you want to delete this appointment?')) return;
-
-  try {
-    const res = await fetch(`/api/appointments/${id}`, {
-      method: 'DELETE',
-      headers: { 'x-admin-token': sessionStorage.getItem('li_admin_auth_token') }
-    });
-    if (res.ok) {
-      alert('Deleted successfully!');
-      loadAppointments();
-    } else {
-      alert('Failed to delete.');
-    }
-  } catch (err) {
-    alert('Error connecting to server.');
-  }
-}
-
 async function loadAppointments() {
   document.getElementById('loading').style.display = 'block';
   document.getElementById('apptTable').style.display = 'none';
