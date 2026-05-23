@@ -312,9 +312,6 @@ async function loadAppointments() {
           <div class="card-label">Manage Status</div>
           <div class="card-val">${statusSelectHTML}</div>
         </div>
-        <div style="text-align:right; padding-top:10px;">
-          <button style="color:red; cursor:pointer; background:none; border:none; font-size:0.85rem;" onclick="deleteAppointment('${a._id}')">🗑 Delete Record</button>
-        </div>
       `;
       cardsWrap.appendChild(card);
       updateSelectColor(card.querySelector('select'), currentStatus);
