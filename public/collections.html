@@ -83,7 +83,7 @@
       <!-- Card 2 -->
       <article class="gallery-card gc-2" data-category="drawers">
         <div class="img-wrap">
-          <img src="6 drawer.jpg" alt="6-Drawer Bedroom Chest" />
+          <img src="6 drawer.jpg" alt="6-Drawer Bedroom Chest" loading="lazy" />
           <div class="gallery-overlay">
             <span class="view-btn">View Details</span>
           </div>
@@ -102,7 +102,7 @@
       <!-- Card 3 -->
       <article class="gallery-card gc-3" data-category="storage">
         <div class="img-wrap">
-          <img src="wallstorage.png" alt="Built-in Storage · Living Room" />
+          <img src="wallstorage.png" alt="Built-in Storage · Living Room" loading="lazy" />
           <div class="gallery-overlay">
             <span class="view-btn">View Details</span>
           </div>
@@ -121,7 +121,7 @@
       <!-- Card 4 -->
       <article class="gallery-card gc-4" data-category="cabinets">
         <div class="img-wrap">
-          <img src="ec2652f1-b796-443e-ad25-e1d173b7f772.jpg" alt="Mirror Cabinet" />
+          <img src="ec2652f1-b796-443e-ad25-e1d173b7f772.jpg" alt="Mirror Cabinet" loading="lazy" />
           <div class="gallery-overlay">
             <span class="view-btn">View Details</span>
           </div>
@@ -140,7 +140,7 @@
       <!-- Card 5 -->
       <article class="gallery-card gc-5" data-category="storage kitchen">
         <div class="img-wrap">
-          <img src="2547a7b6-df1c-4cab-927e-950313666a46.jpg" alt="Under-Sink & Overhead Cabinet Set" />
+          <img src="2547a7b6-df1c-4cab-927e-950313666a46.jpg" alt="Under-Sink & Overhead Cabinet Set" loading="lazy" />
           <div class="gallery-overlay">
             <span class="view-btn">View Details</span>
           </div>
@@ -159,7 +159,7 @@
       <!-- Card 6 -->
       <article class="gallery-card gc-6" data-category="drawers storage">
         <div class="img-wrap">
-          <img src="studydesk.png" alt="Study Desk with Built-in Drawers" />
+          <img src="studydesk.png" alt="Study Desk with Built-in Drawers" loading="lazy" />
           <div class="gallery-overlay">
             <span class="view-btn">View Details</span>
           </div>
@@ -368,6 +368,14 @@
       line-height: 1.8;
       font-weight: 300;
     }
+    @keyframes filterIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)    scale(1);    }
+    }
+    @keyframes filterOut {
+      from { opacity: 1; transform: translateY(0)    scale(1);    }
+      to   { opacity: 0; transform: translateY(8px)  scale(0.96); }
+    }
     @media (max-width: 640px) {
       .modal-inner { grid-template-columns: 1fr; }
       .modal-img-wrap { height: 240px; }
@@ -403,7 +411,7 @@
         desc: 'A 6-drawer chest unit crafted for a bedroom in Malabon. Built with smooth full-extension drawer slides and a clean, minimal fascia. Each drawer is sized for optimal clothing storage — no wasted space.'
       },
       'gc-3': {
-        img: '5c4aa26d-959f-45e6-8246-509e73e20f30.jpg',
+        img: 'wallstorage.png',
         cat: 'Built-in Storage · Living Room',
         title: 'Wall-to-Wall Storage Unit',
         meta: ['Plywood + Veneer', '·', 'Caloocan, 2023'],
@@ -481,25 +489,46 @@
         btn.classList.add('active');
 
         const filter = btn.dataset.filter;
-        let visible = 0;
+        const toShow = [];
+        const toHide = [];
 
         cards.forEach(card => {
           const cats = card.dataset.category;
           const show = filter === 'all' || cats.includes(filter);
-          if (show) {
-            card.style.display = '';
-            card.style.animation = 'none';
-            void card.offsetWidth;
-            card.style.animation = '';
-            visible++;
-          } else {
-            card.style.display = 'none';
-          }
+          if (show) toShow.push(card);
+          else toHide.push(card);
         });
 
-        countEl.textContent = `Showing ${visible} project${visible !== 1 ? 's' : ''}`;
-        emptyState.style.display = visible === 0 ? 'block' : 'none';
-        grid.style.display = visible === 0 ? 'none' : '';
+        // Fade out cards that don't match
+        toHide.forEach(card => {
+          card.style.animation = 'filterOut 0.2s ease forwards';
+          card.addEventListener('animationend', () => {
+            card.style.display = 'none';
+            card.style.animation = '';
+          }, { once: true });
+        });
+
+        // After a short delay, fade in matching cards with stagger
+        setTimeout(() => {
+          toShow.forEach((card, i) => {
+            card.style.display = '';
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(16px) scale(0.97)';
+            setTimeout(() => {
+              card.style.animation = 'filterIn 0.35s ease forwards';
+            }, i * 60);
+            card.addEventListener('animationend', () => {
+              card.style.opacity = '';
+              card.style.transform = '';
+              card.style.animation = '';
+            }, { once: true });
+          });
+
+          const visible = toShow.length;
+          countEl.textContent = `Showing ${visible} project${visible !== 1 ? 's' : ''}`;
+          emptyState.style.display = visible === 0 ? 'block' : 'none';
+          grid.style.display = visible === 0 ? 'none' : '';
+        }, toHide.length > 0 ? 220 : 0);
       });
     });
   </script>
