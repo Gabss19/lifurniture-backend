@@ -310,6 +310,50 @@
       display: block;
     }
 
+    /* ── Price Estimate Card ── */
+    .price-estimate {
+      display: none;
+      background: linear-gradient(135deg, rgba(212, 137, 74, 0.08), rgba(212, 137, 74, 0.03));
+      border: 1px solid rgba(212, 137, 74, 0.35);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      animation: fadeSlideIn 0.25s ease;
+    }
+
+    .price-estimate.visible {
+      display: block;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .estimate-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--honey);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .estimate-range {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: var(--walnut);
+      line-height: 1.1;
+    }
+
+    .estimate-note {
+      font-size: 0.72rem;
+      color: var(--cedar);
+      margin-top: 5px;
+      font-weight: 300;
+      line-height: 1.5;
+    }
+
     /* ── Why Book section ── */
     .why-book {
       background: var(--linen);
@@ -587,6 +631,13 @@
           </div>
         </div>
 
+        <!-- Price Estimate Card — shown when project type is selected -->
+        <div class="price-estimate" id="priceEstimate">
+          <div class="estimate-label">💡 Estimated Starting Price</div>
+          <div class="estimate-range" id="estimateRange">—</div>
+          <div class="estimate-note" id="estimateNote">Final pricing depends on your exact measurements, materials, and finishes. We'll provide a detailed quote after the site visit.</div>
+        </div>
+
         <div class="form-row">
           <div class="form-group">
             <label for="length">Length (m)</label>
@@ -754,40 +805,143 @@
       document.getElementById('navLinks').classList.toggle('open');
     });
 
-// ── NEW: Set up Monthly Availability Calendar (Flatpickr) ──
-async function initCalendar() {
-  let bookedDates = [];
-  
-  try {
-    // 1. Fetch your booked days from MongoDB Atlas
-    const res = await fetch('/api/appointments/booked-dates');
-    if (res.ok) {
-      bookedDates = await res.json();
+    // ── Calendar ──
+    async function initCalendar() {
+      let bookedDates = [];
+      try {
+        const res = await fetch('/api/appointments/booked-dates');
+        if (res.ok) bookedDates = await res.json();
+      } catch (err) {
+        console.error("Could not fetch calendar bookings from server:", err);
+      }
+      flatpickr("#prefDate", {
+        minDate: "today",
+        dateFormat: "Y-m-d",
+        disable: bookedDates,
+        locale: { firstDayOfWeek: 1 }
+      });
     }
-  } catch (err) {
-    console.error("Could not fetch calendar bookings from server:", err);
-  }
+    initCalendar();
 
-  // 2. Initialize the monthly calendar on your input element
-  flatpickr("#prefDate", {
-    minDate: "today",           // Blocks out past dates completely
-    dateFormat: "Y-m-d",        // Matches your standard YYYY-MM-DD format
-    disable: bookedDates,       // Disables and grays out all occupied dates
-    locale: {
-      firstDayOfWeek: 1         // Calender layout starts on a Monday
+    // ── Price Estimate Engine ──
+    const priceData = {
+      cabinets: {
+        ranges: {
+          'below10k':  { range: '₱5,000 – ₱8,000',   note: 'Good for a small single-door or wall-mounted cabinet.' },
+          '10k-30k':   { range: '₱7,000 – ₱12,000',  note: 'Standard 2-door cabinet with basic plywood finish.' },
+          '30k-60k':   { range: '₱10,000 – ₱18,000', note: 'Larger cabinet set or full wardrobe unit.' },
+          '60k-100k':  { range: '₱15,000 – ₱25,000', note: 'Multi-section cabinet with quality hardwood finish.' },
+          'above100k': { range: '₱20,000+',           note: 'Full room cabinetry with premium materials.' },
+          default:     { range: '₱5,000 – ₱20,000+', note: 'Price varies by size, material, and number of units.' }
         }
-    });
-  }
+      },
+      drawers: {
+        ranges: {
+          'below10k':  { range: '₱5,000 – ₱7,000',   note: 'Small bedside or single under-desk drawer unit.' },
+          '10k-30k':   { range: '₱6,000 – ₱10,000',  note: 'Mid-size 4–6 drawer dresser unit.' },
+          '30k-60k':   { range: '₱9,000 – ₱15,000',  note: 'Full dresser or bed-with-drawer combo.' },
+          '60k-100k':  { range: '₱12,000 – ₱20,000', note: 'Solid wood drawer system with quality finish.' },
+          'above100k': { range: '₱18,000+',           note: 'Custom bedroom suite with multiple drawer units.' },
+          default:     { range: '₱5,000 – ₱18,000+', note: 'Price depends on number of drawers and material.' }
+        }
+      },
+      storage: {
+        ranges: {
+          'below10k':  { range: '₱5,000 – ₱8,000',   note: 'Small wall shelf or niche storage unit.' },
+          '10k-30k':   { range: '₱7,000 – ₱12,000',  note: 'Single wall section or living room shelving.' },
+          '30k-60k':   { range: '₱10,000 – ₱18,000', note: 'Full wall built-in storage system.' },
+          '60k-100k':  { range: '₱15,000 – ₱22,000', note: 'Large built-in with quality materials.' },
+          'above100k': { range: '₱20,000+',           note: 'Multi-room or whole-home storage build.' },
+          default:     { range: '₱5,000 – ₱20,000+', note: 'Price depends on wall coverage and configuration.' }
+        }
+      },
+      kitchen: {
+        ranges: {
+          'below10k':  { range: '₱5,000 – ₱9,000',   note: 'Small overhead or single base cabinet section.' },
+          '10k-30k':   { range: '₱8,000 – ₱14,000',  note: 'Basic straight kitchen cabinet layout.' },
+          '30k-60k':   { range: '₱12,000 – ₱20,000', note: 'Upper + lower kitchen cabinet set.' },
+          '60k-100k':  { range: '₱18,000 – ₱25,000', note: 'Full kitchen with island or extended layout.' },
+          'above100k': { range: '₱22,000+',           note: 'Complete kitchen remodel with premium finish.' },
+          default:     { range: '₱5,000 – ₱22,000+', note: 'Kitchen pricing depends on layout and material.' }
+        }
+      },
+      combo: {
+        ranges: {
+          'below10k':  { range: '₱6,000 – ₱10,000',  note: 'Two small pieces — e.g. shelf + small cabinet.' },
+          '10k-30k':   { range: '₱9,000 – ₱15,000',  note: 'Bedroom or living room furniture combo.' },
+          '30k-60k':   { range: '₱13,000 – ₱20,000', note: 'Multi-piece furniture package.' },
+          '60k-100k':  { range: '₱18,000 – ₱25,000', note: 'Full room set with quality materials.' },
+          'above100k': { range: '₱22,000+',           note: 'Whole-home custom furniture project.' },
+          default:     { range: '₱6,000 – ₱22,000+', note: 'Combination projects are quoted per item after the site visit.' }
+        }
+      },
+      other: {
+        ranges: {
+          default: { range: 'Quote Upon Visit', note: "For unique or specialty furniture, we'll provide a detailed estimate after measuring your space." }
+        }
+      }
+    };
 
+    function formatPeso(amount) {
+      return '₱' + amount.toLocaleString('en-PH');
+    }
 
-  initCalendar();
+    function updateEstimate() {
+      const service = document.getElementById('service').value;
+      const budget  = document.getElementById('budget').value;
+      const length  = parseFloat(document.getElementById('length').value);
+      const width   = parseFloat(document.getElementById('width').value);
+      const card    = document.getElementById('priceEstimate');
+      const rangeEl = document.getElementById('estimateRange');
+      const noteEl  = document.getElementById('estimateNote');
 
+      if (!service) { card.classList.remove('visible'); return; }
 
-    // ── Form submission — POST to backend ──
+      const data   = priceData[service];
+      const lookup = (budget && data.ranges[budget]) ? data.ranges[budget] : data.ranges.default;
+
+      // If we have valid dimensions, compute area-adjusted estimate
+      const hasArea = !isNaN(length) && !isNaN(width) && length > 0 && width > 0;
+
+      if (hasArea && service !== 'other') {
+        const area = length * width;
+
+        // Base price per sqm by service type (low end, high end)
+        const sqmRates = {
+          cabinets: { low: 400,  high: 900  },
+          drawers:  { low: 350,  high: 800  },
+          storage:  { low: 380,  high: 850  },
+          kitchen:  { low: 450,  high: 1000 },
+          combo:    { low: 420,  high: 950  },
+        };
+
+        const rate   = sqmRates[service] || { low: 400, high: 900 };
+        let   low    = Math.round((area * rate.low)  / 500) * 500;   // round to nearest 500
+        let   high   = Math.round((area * rate.high) / 500) * 500;
+
+        // Floor: never go below ₱5,000
+        low  = Math.max(low,  5000);
+        high = Math.max(high, low + 2000);
+
+        rangeEl.textContent = `${formatPeso(low)} – ${formatPeso(high)}`;
+        noteEl.textContent  = `Based on your ~${area.toFixed(1)} m² room. Final pricing confirmed after the site visit — this is an estimate only.`;
+      } else {
+        rangeEl.textContent = lookup.range;
+        noteEl.textContent  = lookup.note;
+      }
+
+      card.classList.add('visible');
+    }
+
+    document.getElementById('service').addEventListener('change', updateEstimate);
+    document.getElementById('budget').addEventListener('change', updateEstimate);
+    document.getElementById('length').addEventListener('input', updateEstimate);
+    document.getElementById('width').addEventListener('input',  updateEstimate);
+
+    // ── Form submission ──
     document.getElementById('apptForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
-      // Clear all previous errors
       document.querySelectorAll('.field-error').forEach(el => el.classList.remove('show'));
       document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
 
@@ -816,7 +970,6 @@ async function initCalendar() {
       showErr('prefDate',  'err-prefDate');
       showErr('prefTime',  'err-prefTime');
 
-      // Email format check
       const emailField = document.getElementById('email');
       if (!emailField.value || !emailRegex.test(emailField.value)) {
         emailField.classList.add('invalid');
@@ -825,7 +978,6 @@ async function initCalendar() {
       }
 
       if (!valid) {
-        // Scroll to first error
         const firstInvalid = document.querySelector('.invalid');
         if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
@@ -870,7 +1022,6 @@ async function initCalendar() {
         } else {
           btn.textContent = 'Submit Request →';
           btn.disabled = false;
-          // Show server error inline under the form instead of alert
           const successEl = document.getElementById('formSuccess');
           successEl.style.display = 'block';
           successEl.style.background = 'rgba(192,57,43,0.08)';
