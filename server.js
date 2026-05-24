@@ -31,6 +31,11 @@ const appointmentSchema = new mongoose.Schema({
   phone: String,
   email: String,
   address: String,
+  roomType: String,
+  length: String,
+  width: String,
+  height: String,
+  preferredMaterial: String,
   service: String,
   budget: String,
   prefDate: String,
@@ -77,10 +82,10 @@ app.post('/api/appointments', async (req, res) => {
     }
 
     // 2. Destructure inputs
-    const { firstName, lastName, phone, email, address, service, prefDate, prefTime } = req.body;
+    const { firstName, lastName, phone, email, address, roomType, length, width, height, service, prefDate, prefTime } = req.body;
 
     // 3. Strict Server-Side Validation
-    if (!firstName || !lastName || !phone || !email || !address || !service || !prefDate || !prefTime) {
+    if (!firstName || !lastName || !phone || !email || !address || !roomType || !length || !width || !height || !service || !prefDate || !prefTime) {
       return res.status(400).json({ success: false, message: 'Missing required information.' });
     }
 
@@ -134,6 +139,13 @@ app.post('/api/appointments', async (req, res) => {
             <li><strong>Preferred Time:</strong> ${prefTime}</li>
             <li><strong>Address:</strong> ${address}</li>
           </ul>
+          <h4>Room &amp; Space Details:</h4>
+          <ul>
+            <li><strong>Room Type:</strong> ${req.body.roomType || '—'}</li>
+            <li><strong>Dimensions:</strong> ${req.body.length} m (L) × ${req.body.width} m (W) × ${req.body.height} m (H)</li>
+            <li><strong>Preferred Material:</strong> ${req.body.preferredMaterial || 'No preference'}</li>
+            ${req.body.notes ? `<li><strong>Additional Notes:</strong> ${req.body.notes}</li>` : ''}
+          </ul>
           <hr>
           <p>Our admin team is currently reviewing your schedule. We will update your appointment status and confirm with you shortly.</p>
           <br>
@@ -173,7 +185,7 @@ app.get('/api/appointments/lookup', async (req, res) => {
     }
     const appt = await Appointment.findOne(
       { email: email, prefDate: date },
-      'firstName lastName service prefDate prefTime status createdAt'
+      'firstName lastName service prefDate prefTime status createdAt roomType length width height preferredMaterial notes'
     );
     if (!appt) {
       return res.status(404).json({ success: false, message: 'No appointment found for that email and date.' });
@@ -187,9 +199,8 @@ app.get('/api/appointments/lookup', async (req, res) => {
 // GET - Fetch just a list of booked dates to disable them on the calendar
 app.get('/api/appointments/booked-dates', async (req, res) => {
   try {
-    const appointments = await Appointment.find({}, 'prefDate');
-    const bookedDates = appointments.map(appt => appt.prefDate).filter(Boolean);
-    res.json(bookedDates); 
+    const bookedDates = await Appointment.distinct('prefDate');
+    res.json(bookedDates);
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
