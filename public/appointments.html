@@ -292,6 +292,24 @@
       margin-bottom: 4px;
     }
 
+    .form-group input.invalid,
+    .form-group select.invalid,
+    .form-group textarea.invalid {
+      border-color: #c0392b;
+      box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
+    }
+
+    .field-error {
+      font-size: 0.72rem;
+      color: #c0392b;
+      margin-top: 2px;
+      display: none;
+    }
+
+    .field-error.show {
+      display: block;
+    }
+
     /* ── Why Book section ── */
     .why-book {
       background: var(--linen);
@@ -498,10 +516,12 @@
           <div class="form-group">
             <label for="firstName">First Name</label>
             <input type="text" id="firstName" name="firstName" placeholder="e.g. Maria" required />
+            <span class="field-error" id="err-firstName">Please enter your first name.</span>
           </div>
           <div class="form-group">
             <label for="lastName">Last Name</label>
             <input type="text" id="lastName" name="lastName" placeholder="e.g. Santos" required />
+            <span class="field-error" id="err-lastName">Please enter your last name.</span>
           </div>
         </div>
 
@@ -509,16 +529,19 @@
           <div class="form-group">
             <label for="phone">Phone Number</label>
             <input type="tel" id="phone" name="phone" placeholder="+63 9XX XXX XXXX" required />
+            <span class="field-error" id="err-phone">Please enter your phone number.</span>
           </div>
           <div class="form-group">
             <label for="email">Email Address</label>
             <input type="email" id="email" name="email" placeholder="you@email.com" required />
+            <span class="field-error" id="err-email">Please enter a valid email address.</span>
           </div>
         </div>
 
         <div class="form-group">
           <label for="address">Home Address</label>
           <input type="text" id="address" name="address" placeholder="Street, Barangay, City" required />
+          <span class="field-error" id="err-address">Please enter your home address.</span>
         </div>
 
         <div class="form-divider"></div>
@@ -535,6 +558,21 @@
               <option value="combo">Multiple / Combination</option>
               <option value="other">Other (describe below)</option>
             </select>
+            <span class="field-error" id="err-service">Please select a project type.</span>
+          </div>
+          <div class="form-group">
+            <label for="roomType">Room Type</label>
+            <select id="roomType" name="roomType" required>
+              <option value="" disabled selected>Select a room type</option>
+              <option value="kitchen">Kitchen</option>
+              <option value="bedroom">Bedroom</option>
+              <option value="living-room">Living Room</option>
+              <option value="dining-room">Dining Room</option>
+              <option value="bathroom">Bathroom</option>
+              <option value="office">Office</option>
+              <option value="other">Other</option>
+            </select>
+            <span class="field-error" id="err-roomType">Please select a room type.</span>
           </div>
           <div class="form-group">
             <label for="budget">Estimated Budget (Optional)</label>
@@ -551,8 +589,41 @@
 
         <div class="form-row">
           <div class="form-group">
+            <label for="length">Length (m)</label>
+            <input type="number" id="length" name="length" placeholder="e.g. 4.5" min="0" step="0.01" required />
+            <span class="field-error" id="err-length">Required.</span>
+          </div>
+          <div class="form-group">
+            <label for="width">Width (m)</label>
+            <input type="number" id="width" name="width" placeholder="e.g. 3.2" min="0" step="0.01" required />
+            <span class="field-error" id="err-width">Required.</span>
+          </div>
+          <div class="form-group">
+            <label for="height">Height (m)</label>
+            <input type="number" id="height" name="height" placeholder="e.g. 2.7" min="0" step="0.01" required />
+            <span class="field-error" id="err-height">Required.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="preferredMaterial">Preferred Material (Optional)</label>
+            <select id="preferredMaterial" name="preferredMaterial">
+              <option value="" selected>No Preference</option>
+              <option value="solid-wood">Solid Wood</option>
+              <option value="plywood">Plywood</option>
+              <option value="mdf">MDF</option>
+              <option value="acacia">Acacia</option>
+              <option value="narra">Narra</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
             <label for="prefDate">Preferred Visit Date</label>
             <input type="text" id="prefDate" name="prefDate" placeholder="Select a date" required readonly />
+            <span class="field-error" id="err-prefDate">Please select a preferred date.</span>
           </div>
           <div class="form-group">
             <label for="prefTime">Preferred Time</label>
@@ -561,6 +632,7 @@
               <option value="morning">Morning (8:00 AM – 12:00 PM)</option>
               <option value="afternoon">Afternoon (1:00 PM – 5:00 PM)</option>
             </select>
+            <span class="field-error" id="err-prefTime">Please choose a time slot.</span>
           </div>
         </div>
 
@@ -715,6 +787,50 @@ async function initCalendar() {
     document.getElementById('apptForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
+      // Clear all previous errors
+      document.querySelectorAll('.field-error').forEach(el => el.classList.remove('show'));
+      document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      let valid = true;
+
+      function showErr(id, errId) {
+        const field = document.getElementById(id);
+        const err = document.getElementById(errId);
+        if (!field.value || field.value.trim() === '') {
+          field.classList.add('invalid');
+          if (err) err.classList.add('show');
+          valid = false;
+        }
+      }
+
+      showErr('firstName', 'err-firstName');
+      showErr('lastName',  'err-lastName');
+      showErr('phone',     'err-phone');
+      showErr('address',   'err-address');
+      showErr('service',   'err-service');
+      showErr('roomType',  'err-roomType');
+      showErr('length',    'err-length');
+      showErr('width',     'err-width');
+      showErr('height',    'err-height');
+      showErr('prefDate',  'err-prefDate');
+      showErr('prefTime',  'err-prefTime');
+
+      // Email format check
+      const emailField = document.getElementById('email');
+      if (!emailField.value || !emailRegex.test(emailField.value)) {
+        emailField.classList.add('invalid');
+        document.getElementById('err-email').classList.add('show');
+        valid = false;
+      }
+
+      if (!valid) {
+        // Scroll to first error
+        const firstInvalid = document.querySelector('.invalid');
+        if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
       const btn = this.querySelector('button[type="submit"]');
       btn.textContent = 'Sending…';
       btn.disabled = true;
@@ -725,6 +841,11 @@ async function initCalendar() {
         phone: document.getElementById('phone').value,
         email: document.getElementById('email').value,
         address: document.getElementById('address').value,
+        roomType: document.getElementById('roomType').value,
+        length: document.getElementById('length').value,
+        width: document.getElementById('width').value,
+        height: document.getElementById('height').value,
+        preferredMaterial: document.getElementById('preferredMaterial').value,
         service: document.getElementById('service').value,
         budget: document.getElementById('budget').value,
         prefDate: document.getElementById('prefDate').value,
@@ -749,12 +870,23 @@ async function initCalendar() {
         } else {
           btn.textContent = 'Submit Request →';
           btn.disabled = false;
-          alert('Error: ' + result.message);
+          // Show server error inline under the form instead of alert
+          const successEl = document.getElementById('formSuccess');
+          successEl.style.display = 'block';
+          successEl.style.background = 'rgba(192,57,43,0.08)';
+          successEl.style.borderColor = 'rgba(192,57,43,0.3)';
+          successEl.style.color = '#c0392b';
+          successEl.innerHTML = `<strong>Submission Failed</strong>${result.message}`;
         }
       } catch (err) {
         btn.textContent = 'Submit Request →';
         btn.disabled = false;
-        alert('Server error. Is the backend running?');
+        const successEl = document.getElementById('formSuccess');
+        successEl.style.display = 'block';
+        successEl.style.background = 'rgba(192,57,43,0.08)';
+        successEl.style.borderColor = 'rgba(192,57,43,0.3)';
+        successEl.style.color = '#c0392b';
+        successEl.innerHTML = `<strong>Connection Error</strong>Could not reach the server. Please try again.`;
       }
     });
   </script>
