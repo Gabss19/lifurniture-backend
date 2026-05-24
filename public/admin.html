@@ -139,6 +139,7 @@
           <th>Contact</th>
           <th>Address</th>
           <th>Project</th>
+          <th>Room &amp; Specs</th>
           <th>Schedule</th>
           <th>Submitted</th>
           <th>Status</th>
@@ -171,6 +172,22 @@ const serviceLabels = {
 const timeLabels = {
   morning: 'Morning (8AM–12PM)',
   afternoon: 'Afternoon (1PM–5PM)'
+};
+const roomLabels = {
+  kitchen: 'Kitchen', bedroom: 'Bedroom', 'living-room': 'Living Room',
+  'dining-room': 'Dining Room', bathroom: 'Bathroom', office: 'Office', other: 'Other'
+};
+const materialLabels = {
+  'solid-wood': 'Solid Wood', plywood: 'Plywood', mdf: 'MDF',
+  acacia: 'Acacia', narra: 'Narra', '': 'No Preference'
+};
+const budgetLabels = {
+  'below10k': 'Below ₱10,000',
+  '10k-30k': '₱10,000 – ₱30,000',
+  '30k-60k': '₱30,000 – ₱60,000',
+  '60k-100k': '₱60,000 – ₱100,000',
+  'above100k': 'Above ₱100,000',
+  '': '—'
 };
 
 async function updateStatus(id, newStatus, selectElement) {
@@ -276,7 +293,13 @@ async function loadAppointments() {
         <td>${a.address}</td>
         <td>
           <div>${serviceLabels[a.service] || a.service}</div>
-          <div class="sub">${a.budget || '—'}</div>
+          <div class="sub">${budgetLabels[a.budget] || a.budget || '—'}</div>
+        </td>
+        <td>
+          <div>${roomLabels[a.roomType] || a.roomType || '—'}</div>
+          <div class="sub">${a.length && a.width && a.height ? `${a.length} × ${a.width} × ${a.height} m` : '—'}</div>
+          <div class="sub">${materialLabels[a.preferredMaterial] || a.preferredMaterial || 'No preference'}</div>
+          ${a.notes ? `<div class="sub" style="font-style:italic;">${a.notes}</div>` : ''}
         </td>
         <td>
           <div>${a.prefDate}</div>
@@ -300,8 +323,17 @@ async function loadAppointments() {
         <div class="card-row"><div class="card-label">Address</div><div class="card-val">${a.address}</div></div>
         <div class="card-row">
           <div class="card-label">Project</div>
-          <div class="card-val">${serviceLabels[a.service] || a.service}<div class="card-sub">${a.budget || '—'}</div></div>
+          <div class="card-val">${serviceLabels[a.service] || a.service}<div class="card-sub">${budgetLabels[a.budget] || a.budget || '—'}</div></div>
         </div>
+        <div class="card-row">
+          <div class="card-label">Room</div>
+          <div class="card-val">${roomLabels[a.roomType] || a.roomType || '—'}<div class="card-sub">${a.length && a.width && a.height ? `${a.length} × ${a.width} × ${a.height} m` : '—'}</div></div>
+        </div>
+        <div class="card-row">
+          <div class="card-label">Material</div>
+          <div class="card-val">${materialLabels[a.preferredMaterial] || a.preferredMaterial || 'No preference'}</div>
+        </div>
+        ${a.notes ? `<div class="card-row"><div class="card-label">Notes</div><div class="card-val" style="font-style:italic;">${a.notes}</div></div>` : ''}
         <div class="card-row">
           <div class="card-label">Schedule</div>
           <div class="card-val">${a.prefDate}<div class="card-sub">${timeLabels[a.prefTime] || a.prefTime}</div></div>
