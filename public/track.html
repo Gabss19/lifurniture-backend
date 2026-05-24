@@ -209,7 +209,7 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
       <li><a href="collections.html">Collections</a></li>
-      <li><a href="track.html">Track Appointment</a></li>
+      <li><a href="track.html" class="active">Track Appointment</a></li>
       <li><a href="about.html">About Us</a></li>
       <li><a href="appointments.html" class="nav-cta">Book a Visit</a></li>
     </ul>
@@ -299,6 +299,14 @@
       morning: 'Morning (8:00 AM – 12:00 PM)',
       afternoon: 'Afternoon (1:00 PM – 5:00 PM)'
     };
+    const roomLabels = {
+      kitchen: 'Kitchen', bedroom: 'Bedroom', 'living-room': 'Living Room',
+      'dining-room': 'Dining Room', bathroom: 'Bathroom', office: 'Office', other: 'Other'
+    };
+    const materialLabels = {
+      'solid-wood': 'Solid Wood', plywood: 'Plywood', mdf: 'MDF',
+      acacia: 'Acacia', narra: 'Narra', '': 'No preference'
+    };
 
     const trackBtn    = document.getElementById('trackBtn');
     const errorMsg    = document.getElementById('errorMsg');
@@ -384,6 +392,18 @@
             <div class="result-val">${serviceLabels[a.service] || a.service}</div>
           </div>
           <div class="result-row">
+            <div class="result-label">Room Type</div>
+            <div class="result-val">${roomLabels[a.roomType] || a.roomType || '—'}</div>
+          </div>
+          <div class="result-row">
+            <div class="result-label">Dimensions</div>
+            <div class="result-val">${a.length && a.width && a.height ? `${a.length} m (L) × ${a.width} m (W) × ${a.height} m (H)` : '—'}</div>
+          </div>
+          <div class="result-row">
+            <div class="result-label">Material</div>
+            <div class="result-val">${materialLabels[a.preferredMaterial] || a.preferredMaterial || 'No preference'}</div>
+          </div>
+          <div class="result-row">
             <div class="result-label">Visit Date</div>
             <div class="result-val">${a.prefDate}</div>
           </div>
@@ -395,6 +415,11 @@
             <div class="result-label">Submitted</div>
             <div class="result-val">${submitted}</div>
           </div>
+          ${a.notes ? `
+          <div class="result-row">
+            <div class="result-label">Notes</div>
+            <div class="result-val" style="font-style:italic;">${a.notes}</div>
+          </div>` : ''}
         `;
 
         // Status note
